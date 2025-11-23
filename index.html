@@ -14,7 +14,8 @@
       body {
         font-family: "Comic Sans MS", cursive, sans-serif;
         background: #000;
-        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: hidden;
         position: relative;
         width: 100vw;
         height: 100vh;
@@ -691,7 +692,8 @@
         max-width: 280px;
         z-index: 149;
         max-height: 0;
-        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: hidden;
         opacity: 0;
         transition: max-height 0.5s ease, opacity 0.4s ease, padding 0.5s ease;
       }
@@ -721,6 +723,77 @@
 
       .instructions-panel strong {
         color: #667eea;
+      }
+
+      /* Card Decks - OUTSIDE the board */
+      .card-decks {
+        position: fixed;
+        bottom: 50px;
+        left: 50px;
+        display: flex;
+        gap: 20px;
+        z-index: 150;
+      }
+
+      .card-deck {
+        position: relative;
+        width: 70px;
+        height: 100px;
+      }
+
+      .deck-card {
+        position: absolute;
+        width: 70px;
+        height: 100px;
+        background: white;
+        border-radius: 10px;
+        border: 4px solid rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 45px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s;
+      }
+
+      .deck-card.white {
+        background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        color: #333;
+      }
+
+      .deck-card.yellow {
+        background: linear-gradient(135deg, #ffd43b 0%, #fcc419 100%);
+        color: #333;
+      }
+
+      .deck-card.red {
+        background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+        color: white;
+      }
+
+      /* Card animation - flies to center, spins, and disappears */
+      @keyframes cardDrawAwesome {
+        0% {
+          transform: translate(0, 0) scale(1) rotate(0deg);
+          opacity: 1;
+        }
+        40% {
+          transform: translate(600px, -350px) scale(1.8) rotate(360deg);
+          opacity: 1;
+        }
+        60% {
+          transform: translate(600px, -350px) scale(1.8) rotate(360deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(600px, -350px) scale(0) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      .card-drawing {
+        animation: cardDrawAwesome 1.2s ease-in-out forwards;
+        z-index: 3000;
       }
     </style>
   </head>
@@ -754,6 +827,19 @@
 
     <!-- Game Screen -->
     <div class="game-screen" id="gameScreen">
+      <!-- Card Decks OUTSIDE the board -->
+      <div class="card-decks">
+        <div class="card-deck" id="whiteDeck">
+          <div class="deck-card white">❓</div>
+        </div>
+        <div class="card-deck" id="yellowDeck">
+          <div class="deck-card yellow">❓</div>
+        </div>
+        <div class="card-deck" id="redDeck">
+          <div class="deck-card red">❓</div>
+        </div>
+      </div>
+
       <div class="game-container">
         <div class="title">🚀 Kosmiczna Matematyka 🌟</div>
 
@@ -781,6 +867,8 @@
               <p>
                 <strong>🎲 Rozgrywka:</strong><br />
                 • Gracze rzucają kostką po kolei<br />
+                • Masz 15 sekund na rzut - jeśli nie rzucisz, tracisz
+                kolejkę!<br />
                 • Poruszasz się o wyrzuconą liczbę pól<br />
                 • Ścieżka biegnie wężykiem (patrz na strzałki: → ← ↓)
               </p>
@@ -834,6 +922,13 @@
               </p>
 
               <p>
+                <strong>⚠️ OSZUKIWANIE:</strong><br />
+                Jeśli zostaniesz przyłapany na zmianie karty/okna podczas
+                pytania, otrzymasz karę: "Podejrzenie o oszustwo - cofnij się o
+                X pól" (liczba zależy od trudności).
+              </p>
+
+              <p>
                 <strong>🏆 Zwycięstwo:</strong><br />
                 Kto pierwszy dotrze do METY - WYGRYWA!
               </p>
@@ -843,7 +938,9 @@
 
         <div class="controls">
           <div class="current-player" id="currentPlayer"></div>
-          <button class="btn" onclick="rollDice()">🎲 RZUĆ KOSTKĄ</button>
+          <button class="btn" id="rollDiceBtn" onclick="rollDice()">
+            🎲 RZUĆ KOSTKĄ
+          </button>
           <div class="dice-result" id="diceResult"></div>
         </div>
       </div>
@@ -861,7 +958,7 @@
           autocomplete="off"
         />
         <div class="correct-answer" id="correctAnswer"></div>
-        <button onclick="checkAnswer()">✓ SPRAWDŹ</button>
+        <button id="checkAnswerBtn" onclick="checkAnswer()">✓ SPRAWDŹ</button>
       </div>
     </div>
 
@@ -1124,6 +1221,10 @@
       let questionTimeLeft = 0; // Pozostały czas w sekundach
       let questionStartTime = 0; // Kiedy pytanie zostało zadane
       let questionChangedDuringHidden = false; // Czy pytanie już zostało zmienione podczas ukrycia
+      let wasHidden = false; // Czy karta była ukryta
+      let cheatPenaltyApplied = false; // Czy kara za oszustwo została już naliczona
+      let turnTimer = null; // Timer na turę gracza (15 sekund)
+      let turnTimeLeft = 0; // Pozostały czas na turę
 
       // Setup functions
       let playerCount = 0;
@@ -1500,9 +1601,58 @@
         )}; text-shadow: 0 0 15px ${getPlayerColor(player.color)};">${
           player.name
         }</span>`;
+
+        // Start 15-second turn timer
+        startTurnTimer();
       }
 
+      function startTurnTimer() {
+        // Stop previous timer if exists
+        if (turnTimer) {
+          clearInterval(turnTimer);
+        }
+
+        turnTimeLeft = 15;
+
+        turnTimer = setInterval(() => {
+          turnTimeLeft--;
+
+          if (turnTimeLeft <= 0) {
+            clearInterval(turnTimer);
+            handleTurnTimeout();
+          }
+        }, 1000);
+      }
+
+      function stopTurnTimer() {
+        if (turnTimer) {
+          clearInterval(turnTimer);
+          turnTimer = null;
+        }
+      }
+
+      function handleTurnTimeout() {
+        // Player didn't roll dice in 15 seconds - lose turn
+        showNotification("⏰ CZAS MINĄŁ!\nTracisz kolejkę!", "error");
+
+        setTimeout(() => {
+          nextPlayer();
+        }, 1500);
+      }
+
+      // Dice roll with blocking
+      let diceRolling = false;
+
       function rollDice() {
+        if (diceRolling) return;
+
+        // Stop turn timer - player made their move
+        stopTurnTimer();
+
+        diceRolling = true;
+        const rollBtn = document.getElementById("rollDiceBtn");
+        if (rollBtn) rollBtn.disabled = true;
+
         // Zapisz indeks gracza NA POCZĄTKU - żeby się nie zmienił podczas animacji
         const playerIndex = currentPlayer;
 
@@ -1520,6 +1670,9 @@
 
           // Animuj ruch pionka
           animatePlayerMovement(playerIndex, oldPosition, newPosition, () => {
+            diceRolling = false;
+            if (rollBtn) rollBtn.disabled = false;
+
             // Check if player reached finish
             if (playerPositions[playerIndex] >= boardPath.length) {
               setTimeout(() => {
@@ -1616,62 +1769,109 @@
         }
       }
 
-      function askQuestion(difficulty) {
-        currentDifficulty = difficulty;
-
-        // Purple arrows use hard questions (red), white uses white problems
-        const problemDifficulty = difficulty === "purple" ? "red" : difficulty;
-        const problems = mathProblems[problemDifficulty];
-
-        let problem;
-        let attempts = 0;
-        do {
-          problem = problems[Math.floor(Math.random() * problems.length)];
-          attempts++;
-        } while (
-          usedProblems[problemDifficulty].includes(problem.q) &&
-          attempts < 50
-        );
-
-        if (attempts >= 50) {
-          usedProblems[problemDifficulty] = [];
-          problem = problems[Math.floor(Math.random() * problems.length)];
+      // Card drawing animation
+      function drawCard(difficulty) {
+        let deckId = "";
+        if (difficulty === "white" || difficulty === "green") {
+          deckId = "whiteDeck"; // White and green both use white deck
+        } else if (difficulty === "yellow") {
+          deckId = "yellowDeck";
+        } else if (difficulty === "red" || difficulty === "purple") {
+          deckId = "redDeck";
         }
 
-        usedProblems[problemDifficulty].push(problem.q);
-        currentQuestion = problem;
+        if (!deckId) return;
 
-        const levelNames = {
-          white: "DODAWANIE/ODEJMOWANIE ⚪",
-          green: "ŁATWE 🟢",
-          yellow: "ŚREDNIE 🟡",
-          red: "TRUDNE 🔴",
-          purple: "TELEPORT 🟣 - TRUDNE PYTANIE!",
-        };
+        const deck = document.getElementById(deckId);
+        if (!deck) return;
 
-        document.getElementById(
-          "questionText"
-        ).textContent = `${levelNames[difficulty]}: ${problem.q} = ?`;
-        document.getElementById("answerInput").value = "";
+        const card = deck.querySelector(".deck-card");
+        if (!card) return;
 
-        document.getElementById(
-          "correctAnswer"
-        ).textContent = `Poprawna odpowiedź: ${problem.a}`;
-        document.getElementById("correctAnswer").style.display = "none";
+        // Clone card for animation
+        const animCard = card.cloneNode(true);
+        animCard.classList.add("card-drawing");
+        deck.appendChild(animCard);
 
-        const modal = document.getElementById("questionModal");
-        modal.style.display = "flex";
-
-        document.getElementById("answerInput").focus();
-
-        // Uruchom timer
-        startQuestionTimer();
-
-        // Reset flagi - nowe pytanie, więc jeszcze nie było zmieniane
-        questionChangedDuringHidden = false;
+        setTimeout(() => {
+          animCard.remove();
+        }, 1200);
       }
 
+      function askQuestion(difficulty) {
+        currentDifficulty = difficulty;
+        cheatPenaltyApplied = false;
+        wasHidden = false;
+        questionChangedDuringHidden = false;
+
+        // Draw card animation
+        drawCard(difficulty);
+
+        setTimeout(() => {
+          // Purple arrows use hard questions (red), white uses white problems
+          const problemDifficulty =
+            difficulty === "purple" ? "red" : difficulty;
+          const problems = mathProblems[problemDifficulty];
+
+          let problem;
+          let attempts = 0;
+          do {
+            problem = problems[Math.floor(Math.random() * problems.length)];
+            attempts++;
+          } while (
+            usedProblems[problemDifficulty].includes(problem.q) &&
+            attempts < 50
+          );
+
+          if (attempts >= 50) {
+            usedProblems[problemDifficulty] = [];
+            problem = problems[Math.floor(Math.random() * problems.length)];
+          }
+
+          usedProblems[problemDifficulty].push(problem.q);
+          currentQuestion = problem;
+
+          const levelNames = {
+            white: "DODAWANIE/ODEJMOWANIE ⚪",
+            green: "ŁATWE 🟢",
+            yellow: "ŚREDNIE 🟡",
+            red: "TRUDNE 🔴",
+            purple: "TELEPORT 🟣 - TRUDNE PYTANIE!",
+          };
+
+          document.getElementById(
+            "questionText"
+          ).textContent = `${levelNames[difficulty]}: ${problem.q} = ?`;
+          document.getElementById("answerInput").value = "";
+
+          document.getElementById(
+            "correctAnswer"
+          ).textContent = `Poprawna odpowiedź: ${problem.a}`;
+          document.getElementById("correctAnswer").style.display = "none";
+
+          const modal = document.getElementById("questionModal");
+          modal.style.display = "flex";
+
+          document.getElementById("answerInput").focus();
+
+          // Uruchom timer
+          startQuestionTimer();
+
+          // Reset flagi - nowe pytanie, więc jeszcze nie było zmieniane
+          questionChangedDuringHidden = false;
+        }, 800); // Delay for card animation (1.2s animation, show at 0.8s)
+      }
+
+      // Check answer with blocking
+      let checkingAnswer = false;
+
       function checkAnswer() {
+        if (checkingAnswer) return;
+
+        checkingAnswer = true;
+        const checkBtn = document.getElementById("checkAnswerBtn");
+        if (checkBtn) checkBtn.disabled = true;
+
         // WAŻNE: Zapisz indeks gracza NA POCZĄTKU
         const playerIndex = currentPlayer;
 
@@ -1754,6 +1954,9 @@
                 return;
               }
 
+              checkingAnswer = false;
+              if (checkBtn) checkBtn.disabled = false;
+
               if (giveBonus) {
                 // Daj bonusowy rzut - nie zmieniaj gracza
                 bonusRollInTurn = true;
@@ -1768,6 +1971,8 @@
                 bonusRollInTurn = false;
                 nextPlayer();
               }
+              checkingAnswer = false;
+              if (checkBtn) checkBtn.disabled = false;
             });
           }, 2000);
         } else {
@@ -1807,6 +2012,9 @@
               bonusRollInTurn = false;
               nextPlayer();
             });
+
+            checkingAnswer = false;
+            if (checkBtn) checkBtn.disabled = false;
           }, 2000);
         }
       }
@@ -1918,9 +2126,90 @@
         }, 1000);
       }
 
-      // Obsługa Page Visibility API - wykrywanie czy karta jest w tle
-      let wasHidden = false;
+      // Anti-cheat: Page Visibility API
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          wasHidden = true;
+          questionChangedDuringHidden = false;
+        } else {
+          if (
+            wasHidden &&
+            !questionChangedDuringHidden &&
+            !cheatPenaltyApplied &&
+            document.getElementById("questionModal").style.display === "flex"
+          ) {
+            applyCheatingPenalty();
+            questionChangedDuringHidden = true;
+          }
+          wasHidden = false;
+        }
+      });
 
+      window.addEventListener("blur", () => {
+        wasHidden = true;
+        questionChangedDuringHidden = false;
+      });
+
+      window.addEventListener("focus", () => {
+        if (
+          wasHidden &&
+          !questionChangedDuringHidden &&
+          !cheatPenaltyApplied &&
+          document.getElementById("questionModal").style.display === "flex"
+        ) {
+          applyCheatingPenalty();
+          questionChangedDuringHidden = true;
+        }
+        wasHidden = false;
+      });
+
+      function applyCheatingPenalty() {
+        if (cheatPenaltyApplied) return;
+
+        cheatPenaltyApplied = true;
+        stopQuestionTimer();
+
+        // Determine penalty based on difficulty
+        let penalty = 0;
+        if (currentDifficulty === "white") {
+          penalty = -4;
+        } else if (currentDifficulty === "green") {
+          penalty = -3;
+        } else if (currentDifficulty === "yellow") {
+          penalty = -2;
+        } else if (
+          currentDifficulty === "red" ||
+          currentDifficulty === "purple"
+        ) {
+          penalty = -1;
+        }
+
+        const message = `⚠️ PODEJRZENIE O OSZUSTWO!\nCofasz się ${Math.abs(
+          penalty
+        )} ${Math.abs(penalty) === 1 ? "pole" : "pola"}!`;
+
+        showNotification(message, "error");
+
+        setTimeout(() => {
+          document.getElementById("questionModal").style.display = "none";
+          document.getElementById("correctAnswer").style.display = "none";
+
+          const playerIndex = currentPlayer;
+          const oldPosition = playerPositions[playerIndex];
+          const newPosition = Math.max(0, oldPosition + penalty);
+
+          animatePlayerMovement(playerIndex, oldPosition, newPosition, () => {
+            bonusRollInTurn = false;
+            nextPlayer();
+          });
+
+          checkingAnswer = false;
+          const checkBtn = document.getElementById("checkAnswerBtn");
+          if (checkBtn) checkBtn.disabled = false;
+        }, 2000);
+      }
+
+      // Keep old visibility change for question changing
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
           // Karta została ukryta
@@ -2016,6 +2305,7 @@
       }
 
       function nextPlayer() {
+        stopTurnTimer(); // Stop any running turn timer
         bonusRollInTurn = false; // Reset bonusu dla nowego gracza
         currentPlayer = (currentPlayer + 1) % gamePlayers.length;
         updateCurrentPlayerDisplay();
