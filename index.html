@@ -1041,16 +1041,21 @@
         -webkit-tap-highlight-color: transparent;
       }
 
+      .mobile-color-option:active:not(.disabled) {
+        transform: scale(0.9);
+      }
+
       .mobile-color-option.selected {
         border: 5px solid white;
-        transform: scale(1.2);
+        transform: scale(1.15);
         box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
       }
 
       .mobile-color-option.disabled {
-        opacity: 0.3;
+        opacity: 0.25;
         cursor: not-allowed;
         pointer-events: none;
+        filter: grayscale(100%);
       }
 
       .mobile-btn {
@@ -1079,6 +1084,8 @@
       .mobile-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+        background: #999;
+        transform: none !important;
       }
 
       .mobile-btn.roll {
@@ -1365,6 +1372,13 @@
       <h1>🚀 Kosmiczna Matematyka</h1>
       <h2 style="margin-bottom: 30px">Dołącz do gry!</h2>
 
+      <div
+        id="mobileLoadingMsg"
+        style="color: #ffd43b; margin-bottom: 20px; font-size: 16px"
+      >
+        ⏳ Łączenie...
+      </div>
+
       <input
         type="text"
         id="mobilePlayerName"
@@ -1420,8 +1434,9 @@
 
       <button
         class="mobile-btn"
+        id="mobileJoinBtn"
         onclick="joinMobileGame(event)"
-        ontouchend="this.onclick"
+        disabled
       >
         Dołącz do gry
       </button>
@@ -1447,7 +1462,6 @@
         class="mobile-btn roll"
         id="mobileRollBtn"
         onclick="mobileRollDice(event)"
-        ontouchend="this.onclick"
         disabled
       >
         🎲 RZUĆ KOSTKĄ
@@ -1472,7 +1486,6 @@
           class="mobile-btn"
           id="mobileSubmitBtn"
           onclick="mobileSubmitAnswer(event)"
-          ontouchend="this.onclick"
         >
           ✓ SPRAWDŹ
         </button>
@@ -1483,11 +1496,7 @@
     <div class="mobile-player-screen" id="mobileWinnerScreen">
       <h1>🏆 KONIEC GRY! 🏆</h1>
       <div class="success-message" id="mobileWinnerMessage"></div>
-      <button
-        class="mobile-btn"
-        onclick="location.reload()"
-        ontouchend="this.onclick"
-      >
+      <button class="mobile-btn" onclick="location.reload()">
         🔄 Zagraj ponownie
       </button>
     </div>
@@ -1541,10 +1550,10 @@
         document.getElementById("setupScreen").style.display = "none";
         document.getElementById("mobileJoinScreen").classList.add("active");
 
-        // Wait for libraries to load
+        // Wait for libraries to load - increased timeout
         setTimeout(() => {
           initMobilePlayer(roomId);
-        }, 500);
+        }, 1000);
       } else {
         // Normal desktop mode
         window.addEventListener("load", () => {
@@ -1714,6 +1723,8 @@
       let currentTurn = 0;
       let mobileQuestionTimer = null;
       let isJoining = false;
+      let mobileInitialized = false;
+      let takenColors = [];
 
       // =====  LOCAL MODE FUNCTIONS =====
 
@@ -2590,6 +2601,17 @@
           console.log("Player connected:", conn.peer);
           connections.push(conn);
 
+          // Send current taken colors immediately
+          setTimeout(() => {
+            if (conn.open) {
+              const takenColors = onlinePlayers.map((p) => p.color);
+              conn.send({
+                type: "takenColors",
+                colors: takenColors,
+              });
+            }
+          }, 100);
+
           conn.on("data", function (data) {
             handlePlayerMessage(conn, data);
           });
@@ -2598,6 +2620,7 @@
             connections = connections.filter((c) => c !== conn);
             onlinePlayers = onlinePlayers.filter((p) => p.conn !== conn);
             updatePlayersWaitingList();
+            broadcastTakenColors();
           });
         });
 
@@ -2653,7 +2676,11 @@
             });
             updatePlayersWaitingList();
 
+            // Send success to this player
             conn.send({ type: "joined", success: true });
+
+            // Broadcast taken colors to ALL players
+            broadcastTakenColors();
           }
         } else if (data.type === "roll") {
           if (isCurrentPlayerTurn(conn)) {
@@ -2664,6 +2691,18 @@
             submitAnswerOnline(data.answer);
           }
         }
+      }
+
+      function broadcastTakenColors() {
+        const takenColors = onlinePlayers.map((p) => p.color);
+        connections.forEach((conn) => {
+          if (conn.open) {
+            conn.send({
+              type: "takenColors",
+              colors: takenColors,
+            });
+          }
+        });
       }
 
       function isCurrentPlayerTurn(conn) {
@@ -2694,7 +2733,16 @@
         const startBtn = document.getElementById("startOnlineBtn");
         if (onlinePlayers.length >= 2 && onlinePlayers.length <= 4) {
           startBtn.disabled = false;
-          startBtn.textContent = `🎮 START GRY (${onlinePlayers.length} graczy)`;
+          startBtn.textContent = `🎮 START GRY (${onlinePlayers.length} ${
+            onlinePlayers.length === 1
+              ? "gracz"
+              : onlinePlayers.length < 5
+              ? "graczy"
+              : "graczy"
+          })`;
+        } else if (onlinePlayers.length === 1) {
+          startBtn.disabled = true;
+          startBtn.textContent = `Czekam na więcej graczy... (1/2)`;
         } else {
           startBtn.disabled = true;
           startBtn.textContent = `🎮 START GRY (min. 2 graczy)`;
@@ -2977,7 +3025,19 @@
       // ===== MOBILE PLAYER MODE =====
 
       function initMobilePlayer(room) {
+        if (mobileInitialized) {
+          console.log("Mobile player already initialized, skipping");
+          return;
+        }
+        mobileInitialized = true;
+        console.log("Initializing mobile player for room:", room);
+
         if (typeof Peer === "undefined") {
+          console.error("PeerJS not loaded");
+          const loadingMsg = document.getElementById("mobileLoadingMsg");
+          if (loadingMsg) {
+            loadingMsg.textContent = "❌ Błąd ładowania";
+          }
           showMobileError(
             "Biblioteka PeerJS nie została załadowana. Sprawdź połączenie i odśwież stronę."
           );
@@ -2990,16 +3050,33 @@
         try {
           myPeer = new Peer();
         } catch (error) {
+          console.error("Failed to create Peer:", error);
+          const loadingMsg = document.getElementById("mobileLoadingMsg");
+          if (loadingMsg) {
+            loadingMsg.style.display = "none";
+          }
           showMobileError("Nie można połączyć: " + error.message);
           return;
         }
 
         myPeer.on("open", function (id) {
           console.log("My peer ID:", id);
+
+          // Hide loading message
+          const loadingMsg = document.getElementById("mobileLoadingMsg");
+          if (loadingMsg) {
+            loadingMsg.style.display = "none";
+          }
         });
 
         myPeer.on("error", function (err) {
           console.error("Peer error:", err);
+
+          const loadingMsg = document.getElementById("mobileLoadingMsg");
+          if (loadingMsg) {
+            loadingMsg.style.display = "none";
+          }
+
           if (err.type === "network") {
             showMobileError("Błąd sieci. Sprawdź połączenie internetowe.");
           } else {
@@ -3007,17 +3084,29 @@
           }
         });
 
-        // Setup color selector - using both click and touch
-        document.querySelectorAll(".mobile-color-option").forEach((option) => {
-          const selectColor = function (e) {
-            // Prevent any default behavior and event bubbling
-            if (e) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
+        // Setup color selector - ONE TIME only
+        const colorOptions = document.querySelectorAll(".mobile-color-option");
+        console.log(
+          "Setting up color selector, found",
+          colorOptions.length,
+          "options"
+        );
 
-            // Don't select if disabled
-            if (option.classList.contains("disabled")) {
+        colorOptions.forEach((option, index) => {
+          console.log(
+            `Setting up color option ${index}:`,
+            option.dataset.color
+          );
+          option.onclick = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const color = this.dataset.color;
+            console.log("Color clicked:", color, "takenColors:", takenColors);
+
+            // Don't select if disabled/taken
+            if (takenColors.includes(color)) {
+              console.log("Color is taken, ignoring");
               return;
             }
 
@@ -3027,24 +3116,63 @@
             });
 
             // Select this one
-            option.classList.add("selected");
-            myPlayerColor = option.dataset.color;
+            this.classList.add("selected");
+            myPlayerColor = color;
             console.log("Selected color:", myPlayerColor);
-          };
 
-          // Add both touch and click listeners
-          option.addEventListener("touchstart", selectColor, {
-            passive: false,
-          });
-          option.addEventListener("click", selectColor);
+            checkCanJoin();
+          };
         });
 
-        // Auto-select first color (without triggering focus issues)
+        // Setup name input - ONE TIME only
+        const nameInput = document.getElementById("mobilePlayerName");
+        nameInput.oninput = function () {
+          checkCanJoin();
+        };
+
+        // Auto-select first color
         const firstColor = document.querySelector(".mobile-color-option");
         if (firstColor) {
           firstColor.classList.add("selected");
           myPlayerColor = firstColor.dataset.color;
         }
+
+        checkCanJoin();
+      }
+
+      function checkCanJoin() {
+        const nameInput = document.getElementById("mobilePlayerName");
+        const joinBtn = document.getElementById("mobileJoinBtn");
+
+        if (nameInput && joinBtn) {
+          const hasName = nameInput.value.trim().length > 0;
+          const hasColor = myPlayerColor !== "";
+
+          console.log("checkCanJoin:", {
+            hasName,
+            hasColor,
+            isJoining,
+            myPlayerColor,
+          });
+
+          joinBtn.disabled = !(hasName && hasColor) || isJoining;
+        }
+      }
+
+      function updateTakenColors(colors) {
+        console.log("updateTakenColors:", colors);
+        takenColors = colors;
+
+        document.querySelectorAll(".mobile-color-option").forEach((option) => {
+          const color = option.dataset.color;
+
+          if (takenColors.includes(color) && myPlayerColor !== color) {
+            option.classList.add("disabled");
+            option.classList.remove("selected");
+          } else {
+            option.classList.remove("disabled");
+          }
+        });
       }
 
       function joinMobileGame(event) {
@@ -3056,28 +3184,16 @@
           return;
         }
 
-        isJoining = true;
-
-        // Disable button
-        const joinBtn = event ? event.target : null;
-        if (joinBtn) {
-          joinBtn.disabled = true;
-        }
-
         const nameInput = document.getElementById("mobilePlayerName");
         myPlayerName = nameInput.value.trim();
 
         if (!myPlayerName) {
           showMobileError("Wpisz swoje imię!");
-          isJoining = false;
-          if (joinBtn) joinBtn.disabled = false;
           return;
         }
 
         if (!myPlayerColor) {
           showMobileError("Wybierz kolor!");
-          isJoining = false;
-          if (joinBtn) joinBtn.disabled = false;
           return;
         }
 
@@ -3085,17 +3201,18 @@
           showMobileError(
             "Połączenie nie jest gotowe. Spróbuj ponownie za chwilę."
           );
-          isJoining = false;
-          if (joinBtn) joinBtn.disabled = false;
           return;
         }
+
+        isJoining = true;
+        checkCanJoin();
 
         try {
           hostConnection = myPeer.connect(roomId);
         } catch (error) {
           showMobileError("Nie można połączyć z hostem: " + error.message);
           isJoining = false;
-          if (joinBtn) joinBtn.disabled = false;
+          checkCanJoin();
           return;
         }
 
@@ -3121,7 +3238,8 @@
         hostConnection.on("error", function (err) {
           console.error("Connection error:", err);
           isJoining = false;
-          if (joinBtn) joinBtn.disabled = false;
+          checkCanJoin();
+
           if (err.type === "peer-unavailable") {
             showMobileError("Nie można znaleźć pokoju. Sprawdź kod QR.");
           } else if (err.type === "network") {
@@ -3143,6 +3261,8 @@
         } else if (data.type === "error") {
           isJoining = false;
           showMobileError(data.message);
+        } else if (data.type === "takenColors") {
+          updateTakenColors(data.colors);
         } else if (data.type === "gameStart") {
           allPlayers = data.players;
           currentTurn = data.currentPlayer;
