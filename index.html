@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
     <title>Kosmiczna Matematyka</title>
     <!-- PeerJS Library -->
@@ -18,6 +18,13 @@
         box-sizing: border-box;
       }
 
+      input,
+      button,
+      select,
+      textarea {
+        touch-action: manipulation;
+      }
+
       body {
         font-family: "Comic Sans MS", cursive, sans-serif;
         background: #000;
@@ -25,6 +32,7 @@
         position: relative;
         width: 100vw;
         height: 100vh;
+        -webkit-tap-highlight-color: transparent;
       }
 
       /* Animated cosmic background */
@@ -959,12 +967,15 @@
       .mobile-player-screen {
         display: none;
         width: 100%;
-        height: 100vh;
+        min-height: 100vh;
         padding: 20px;
         color: white;
         text-align: center;
         overflow-y: auto;
+        overflow-x: hidden;
         z-index: 3000;
+        -webkit-overflow-scrolling: touch;
+        pointer-events: none;
       }
 
       .mobile-player-screen.active {
@@ -972,24 +983,41 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        pointer-events: auto;
       }
 
       .mobile-player-screen h1 {
-        font-size: 28px;
-        margin-bottom: 30px;
+        font-size: 24px;
+        margin-bottom: 20px;
         text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+      }
+
+      .mobile-player-screen h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
       }
 
       .mobile-player-screen input {
         width: 100%;
         max-width: 400px;
         padding: 15px;
-        font-size: 18px;
+        font-size: 16px;
         border: 3px solid #667eea;
         border-radius: 10px;
         margin-bottom: 20px;
         font-family: inherit;
         text-align: center;
+        -webkit-user-select: text;
+        user-select: text;
+        touch-action: manipulation;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      .mobile-player-screen input:focus {
+        outline: none;
+        border-color: #51cf66;
+        touch-action: manipulation;
       }
 
       .mobile-color-selector {
@@ -999,6 +1027,7 @@
         margin-bottom: 30px;
         max-width: 400px;
         width: 100%;
+        touch-action: manipulation;
       }
 
       .mobile-color-option {
@@ -1008,6 +1037,8 @@
         border: 4px solid rgba(255, 255, 255, 0.3);
         cursor: pointer;
         transition: all 0.3s;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .mobile-color-option.selected {
@@ -1019,6 +1050,7 @@
       .mobile-color-option.disabled {
         opacity: 0.3;
         cursor: not-allowed;
+        pointer-events: none;
       }
 
       .mobile-btn {
@@ -1036,6 +1068,8 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         transition: all 0.3s;
         margin: 10px 0;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .mobile-btn:active {
@@ -1086,10 +1120,24 @@
         width: 100%;
       }
 
+      .question-box input {
+        -webkit-user-select: text;
+        user-select: text;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      .question-box input:focus {
+        outline: none;
+        border: 3px solid #51cf66;
+      }
+
       .question-text {
-        font-size: 32px;
+        font-size: 28px;
         margin: 20px 0;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
 
       .timer {
@@ -1315,13 +1363,16 @@
     <!-- Join Screen -->
     <div class="mobile-player-screen" id="mobileJoinScreen">
       <h1>🚀 Kosmiczna Matematyka</h1>
-      <h2>Dołącz do gry!</h2>
+      <h2 style="margin-bottom: 30px">Dołącz do gry!</h2>
 
       <input
         type="text"
         id="mobilePlayerName"
         placeholder="Wpisz swoje imię"
         maxlength="15"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="words"
       />
 
       <div class="mobile-color-selector" id="mobileColorSelector">
@@ -1367,7 +1418,11 @@
         ></div>
       </div>
 
-      <button class="mobile-btn" onclick="joinMobileGame()">
+      <button
+        class="mobile-btn"
+        onclick="joinMobileGame(event)"
+        ontouchend="this.onclick"
+      >
         Dołącz do gry
       </button>
       <div id="mobileJoinError" class="error-msg" style="display: none"></div>
@@ -1391,7 +1446,8 @@
       <button
         class="mobile-btn roll"
         id="mobileRollBtn"
-        onclick="mobileRollDice()"
+        onclick="mobileRollDice(event)"
+        ontouchend="this.onclick"
         disabled
       >
         🎲 RZUĆ KOSTKĄ
@@ -1408,11 +1464,15 @@
           type="number"
           id="mobileAnswerInput"
           placeholder="Wpisz odpowiedź"
+          autocomplete="off"
+          inputmode="numeric"
+          pattern="[0-9]*"
         />
         <button
           class="mobile-btn"
           id="mobileSubmitBtn"
-          onclick="mobileSubmitAnswer()"
+          onclick="mobileSubmitAnswer(event)"
+          ontouchend="this.onclick"
         >
           ✓ SPRAWDŹ
         </button>
@@ -1423,7 +1483,11 @@
     <div class="mobile-player-screen" id="mobileWinnerScreen">
       <h1>🏆 KONIEC GRY! 🏆</h1>
       <div class="success-message" id="mobileWinnerMessage"></div>
-      <button class="mobile-btn" onclick="location.reload()">
+      <button
+        class="mobile-btn"
+        onclick="location.reload()"
+        ontouchend="this.onclick"
+      >
         🔄 Zagraj ponownie
       </button>
     </div>
@@ -1649,6 +1713,7 @@
       let allPlayers = [];
       let currentTurn = 0;
       let mobileQuestionTimer = null;
+      let isJoining = false;
 
       // =====  LOCAL MODE FUNCTIONS =====
 
@@ -2942,35 +3007,77 @@
           }
         });
 
-        // Setup color selector
+        // Setup color selector - using both click and touch
         document.querySelectorAll(".mobile-color-option").forEach((option) => {
-          option.addEventListener("click", function () {
-            document
-              .querySelectorAll(".mobile-color-option")
-              .forEach((o) => o.classList.remove("selected"));
-            this.classList.add("selected");
-            myPlayerColor = this.dataset.color;
+          const selectColor = function (e) {
+            // Prevent any default behavior and event bubbling
+            if (e) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+
+            // Don't select if disabled
+            if (option.classList.contains("disabled")) {
+              return;
+            }
+
+            // Remove selection from all
+            document.querySelectorAll(".mobile-color-option").forEach((o) => {
+              o.classList.remove("selected");
+            });
+
+            // Select this one
+            option.classList.add("selected");
+            myPlayerColor = option.dataset.color;
+            console.log("Selected color:", myPlayerColor);
+          };
+
+          // Add both touch and click listeners
+          option.addEventListener("touchstart", selectColor, {
+            passive: false,
           });
+          option.addEventListener("click", selectColor);
         });
 
-        // Auto-select first color
+        // Auto-select first color (without triggering focus issues)
         const firstColor = document.querySelector(".mobile-color-option");
         if (firstColor) {
-          firstColor.click();
+          firstColor.classList.add("selected");
+          myPlayerColor = firstColor.dataset.color;
         }
       }
 
-      function joinMobileGame() {
+      function joinMobileGame(event) {
+        if (event) {
+          event.preventDefault();
+        }
+
+        if (isJoining) {
+          return;
+        }
+
+        isJoining = true;
+
+        // Disable button
+        const joinBtn = event ? event.target : null;
+        if (joinBtn) {
+          joinBtn.disabled = true;
+        }
+
         const nameInput = document.getElementById("mobilePlayerName");
         myPlayerName = nameInput.value.trim();
 
         if (!myPlayerName) {
           showMobileError("Wpisz swoje imię!");
+          isJoining = false;
+          if (joinBtn) joinBtn.disabled = false;
           return;
         }
 
         if (!myPlayerColor) {
           showMobileError("Wybierz kolor!");
+          isJoining = false;
+          if (joinBtn) joinBtn.disabled = false;
           return;
         }
 
@@ -2978,6 +3085,8 @@
           showMobileError(
             "Połączenie nie jest gotowe. Spróbuj ponownie za chwilę."
           );
+          isJoining = false;
+          if (joinBtn) joinBtn.disabled = false;
           return;
         }
 
@@ -2985,6 +3094,8 @@
           hostConnection = myPeer.connect(roomId);
         } catch (error) {
           showMobileError("Nie można połączyć z hostem: " + error.message);
+          isJoining = false;
+          if (joinBtn) joinBtn.disabled = false;
           return;
         }
 
@@ -3009,6 +3120,8 @@
 
         hostConnection.on("error", function (err) {
           console.error("Connection error:", err);
+          isJoining = false;
+          if (joinBtn) joinBtn.disabled = false;
           if (err.type === "peer-unavailable") {
             showMobileError("Nie można znaleźć pokoju. Sprawdź kod QR.");
           } else if (err.type === "network") {
@@ -3024,9 +3137,11 @@
 
         if (data.type === "joined") {
           if (data.success) {
+            isJoining = false;
             showMobileScreen("mobileWaitingScreen");
           }
         } else if (data.type === "error") {
+          isJoining = false;
           showMobileError(data.message);
         } else if (data.type === "gameStart") {
           allPlayers = data.players;
@@ -3114,7 +3229,11 @@
         updateMobileTurnMessage();
       }
 
-      function mobileRollDice() {
+      function mobileRollDice(event) {
+        if (event) {
+          event.preventDefault();
+        }
+
         const rollBtn = document.getElementById("mobileRollBtn");
         rollBtn.disabled = true;
 
@@ -3129,7 +3248,11 @@
         document.getElementById("mobileQuestionText").textContent =
           data.question + " = ?";
         document.getElementById("mobileAnswerInput").value = "";
-        document.getElementById("mobileAnswerInput").focus();
+
+        // Focus after a small delay to ensure screen is shown
+        setTimeout(() => {
+          document.getElementById("mobileAnswerInput").focus();
+        }, 300);
 
         startMobileQuestionTimer(data.timeLimit);
       }
@@ -3169,7 +3292,11 @@
         }
       }
 
-      function mobileSubmitAnswer() {
+      function mobileSubmitAnswer(event) {
+        if (event) {
+          event.preventDefault();
+        }
+
         if (mobileQuestionTimer) {
           clearInterval(mobileQuestionTimer);
         }
