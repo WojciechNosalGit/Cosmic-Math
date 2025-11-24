@@ -2,7 +2,10 @@
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
     <title>Kosmiczna Matematyka</title>
     <!-- PeerJS Library -->
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -14,8 +17,11 @@
         padding: 0;
         box-sizing: border-box;
       }
-      
-      input, button, select, textarea {
+
+      input,
+      button,
+      select,
+      textarea {
         touch-action: manipulation;
       }
 
@@ -96,6 +102,192 @@
           opacity: 1;
           transform: scale(1.2);
         }
+      }
+
+      /* Profile Setup Screen */
+      .profile-setup-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 4000;
+      }
+
+      .profile-setup-container {
+        background: rgba(20, 20, 40, 0.95);
+        padding: 40px;
+        border-radius: 20px;
+        border: 3px solid rgba(102, 126, 234, 0.5);
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        max-width: 500px;
+        width: 90%;
+        color: white;
+        text-align: center;
+      }
+
+      .profile-setup-container h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+      }
+
+      .profile-setup-container h2 {
+        font-size: 20px;
+        margin-bottom: 30px;
+        color: #ffd43b;
+      }
+
+      .profile-setup-container input {
+        width: 100%;
+        padding: 15px;
+        font-size: 18px;
+        border: 3px solid #667eea;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-family: inherit;
+        text-align: center;
+      }
+
+      .profile-color-selector,
+      .edit-color-selector {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin: 20px 0;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .profile-color-option,
+      .edit-color-option {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.2s;
+        touch-action: manipulation;
+      }
+
+      .profile-color-option:hover,
+      .edit-color-option:hover {
+        transform: scale(1.1);
+      }
+
+      .profile-color-option.selected,
+      .edit-color-option.selected {
+        border: 5px solid white;
+        transform: scale(1.15);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+      }
+
+      /* Profile Edit Button */
+      .profile-display {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: auto !important;
+      }
+
+      .profile-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 10px 16px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        pointer-events: none;
+      }
+
+      .profile-name {
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        font-family: inherit;
+      }
+
+      .profile-color-dot {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      .profile-edit-icon {
+        align-self: flex-start;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(102, 126, 234, 0.5);
+        color: #667eea;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        pointer-events: auto !important;
+        z-index: 10000;
+        position: relative;
+      }
+
+      .profile-edit-icon:hover {
+        transform: scale(1.1);
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Profile Edit Modal */
+      .profile-edit-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5000;
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      .profile-edit-container {
+        background: rgba(20, 20, 40, 0.98);
+        padding: 40px;
+        border-radius: 20px;
+        border: 3px solid rgba(102, 126, 234, 0.5);
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        max-width: 500px;
+        width: 90%;
+        color: white;
+        text-align: center;
+      }
+
+      .profile-edit-container h2 {
+        font-size: 28px;
+        margin-bottom: 30px;
+        text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+      }
+
+      .profile-edit-container input {
+        width: 100%;
+        padding: 15px;
+        font-size: 18px;
+        border: 3px solid #667eea;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-family: inherit;
+        text-align: center;
       }
 
       /* Setup screen */
@@ -602,6 +794,16 @@
         }
       }
 
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-20px) scale(1.1);
+        }
+      }
+
       /* Markers */
       .start-marker {
         position: absolute;
@@ -958,18 +1160,29 @@
       }
 
       /* Mobile Player Interface */
+      /* CRITICAL: Disable ALL animations and transitions on mobile */
+      .mobile-player-screen *,
+      .mobile-player-screen *::before,
+      .mobile-player-screen *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
       .mobile-player-screen {
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        min-height: 100vh;
-        padding: 20px;
+        height: 100vh;
+        background: #1a1a2e;
         color: white;
         text-align: center;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: hidden;
         z-index: 3000;
-        -webkit-overflow-scrolling: touch;
         pointer-events: none;
+        user-select: none;
+        -webkit-user-select: none;
       }
 
       .mobile-player-screen.active {
@@ -985,7 +1198,7 @@
         margin-bottom: 20px;
         text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
       }
-      
+
       .mobile-player-screen h2 {
         font-size: 20px;
         margin-bottom: 20px;
@@ -1008,55 +1221,25 @@
         appearance: none;
         background: white;
       }
-      
+
+      #mobileQuestionScreen input {
+        font-size: 32px;
+        padding: 20px;
+        border-radius: 15px;
+        font-weight: bold;
+      }
+
+      #mobileQuestionScreen .mobile-btn {
+        font-size: 28px;
+        padding: 22px;
+        border-radius: 15px;
+      }
+
       .mobile-player-screen input:focus {
         outline: none;
         border-color: #51cf66;
         touch-action: manipulation;
         background: white;
-      }
-
-      .mobile-color-selector {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-        margin-bottom: 30px;
-        max-width: 400px;
-        width: 100%;
-        touch-action: manipulation;
-      }
-
-      .mobile-color-option {
-        width: 100%;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        border: 4px solid rgba(255, 255, 255, 0.3);
-        cursor: pointer;
-        transition: all 0.2s ease-out;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        will-change: transform;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-      }
-      
-      .mobile-color-option:active:not(.disabled) {
-        transform: translateZ(0) scale(0.95);
-        -webkit-transform: translateZ(0) scale(0.95);
-      }
-
-      .mobile-color-option.selected {
-        border: 5px solid white;
-        transform: translateZ(0) scale(1.15);
-        -webkit-transform: translateZ(0) scale(1.15);
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-      }
-
-      .mobile-color-option.disabled {
-        opacity: 0.25;
-        cursor: not-allowed;
-        pointer-events: none;
-        filter: grayscale(100%);
       }
 
       .mobile-btn {
@@ -1072,42 +1255,53 @@
         cursor: pointer;
         font-family: inherit;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        transition: transform 0.1s ease-out;
+        transition: transform 0.1s ease-out, opacity 0.1s ease-out;
         margin: 10px 0;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
-        will-change: transform;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
+        user-select: none;
+        -webkit-user-select: none;
       }
 
       .mobile-btn:active:not(:disabled) {
-        transform: translateZ(0) scale(0.97);
-        -webkit-transform: translateZ(0) scale(0.97);
+        transform: scale(0.97);
       }
 
       .mobile-btn:disabled {
-        opacity: 0.5;
+        opacity: 0.3;
         cursor: not-allowed;
-        background: #999;
-        transform: none !important;
-        -webkit-transform: none !important;
+        background: #555;
       }
 
       .mobile-btn.roll {
         background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
-        font-size: 32px;
-        padding: 40px;
+        font-size: 42px;
+        padding: 50px 60px;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(81, 207, 102, 0.4);
+        width: 80%;
+        max-width: 300px;
+      }
+
+      .mobile-btn.roll:disabled {
+        background: #333;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      #mobileGameScreen {
+        gap: 20px;
+        padding: 20px;
       }
 
       .status-message {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 20px;
-        border-radius: 12px;
+        background: rgba(102, 126, 234, 0.2);
+        padding: 25px;
+        border-radius: 15px;
         margin: 20px 0;
-        font-size: 18px;
+        font-size: 20px;
         max-width: 400px;
-        width: 100%;
+        width: 90%;
+        border: 2px solid rgba(102, 126, 234, 0.3);
       }
 
       .players-list {
@@ -1124,42 +1318,49 @@
         border: 2px solid #51cf66;
       }
 
+      #mobileQuestionScreen {
+        background: #1a1a2e;
+        padding: 40px 20px;
+      }
+
       .question-box {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 30px;
-        border-radius: 15px;
-        margin: 20px 0;
-        max-width: 400px;
-        width: 100%;
+        padding: 50px 30px;
+        border-radius: 25px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        border: 3px solid rgba(255, 255, 255, 0.3);
       }
-      
+
       .question-box input {
         -webkit-user-select: text;
         user-select: text;
         -webkit-appearance: none;
         appearance: none;
       }
-      
+
       .question-box input:focus {
         outline: none;
         border: 3px solid #51cf66;
       }
 
       .question-text {
-        font-size: 28px;
-        margin: 20px 0;
+        font-size: 36px;
+        margin: 30px 0;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         word-wrap: break-word;
         overflow-wrap: break-word;
+        font-weight: bold;
       }
 
       .timer {
-        font-size: 24px;
+        font-size: 32px;
         font-weight: bold;
         margin: 10px 0;
-        padding: 10px;
+        padding: 15px;
         background: rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
+        border-radius: 12px;
       }
 
       .timer.warning {
@@ -1173,8 +1374,13 @@
       }
 
       @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
       }
 
       .success-message {
@@ -1201,12 +1407,18 @@
       .loading {
         font-size: 18px;
         opacity: 0.7;
-        animation: blink 1.5s infinite;
+        /* DISABLED animation - może powodować problemy */
+        /* animation: blink 1.5s infinite; */
       }
 
       @keyframes blink {
-        0%, 100% { opacity: 0.7; }
-        50% { opacity: 0.3; }
+        0%,
+        100% {
+          opacity: 0.7;
+        }
+        50% {
+          opacity: 0.3;
+        }
       }
     </style>
   </head>
@@ -1215,8 +1427,172 @@
     <div class="space-bg"></div>
     <div class="stars" id="stars"></div>
 
+    <!-- Profile Setup Screen (First Time) -->
+    <div
+      class="profile-setup-screen"
+      id="profileSetupScreen"
+      style="display: none"
+    >
+      <div class="profile-setup-container">
+        <h1>🚀 Kosmiczna Matematyka</h1>
+        <h2>Witaj! Utwórz swój profil gracza</h2>
+
+        <input
+          type="text"
+          id="profileNameInput"
+          placeholder="Wpisz swoją nazwę"
+          maxlength="15"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="words"
+        />
+
+        <p style="font-size: 18px; margin: 20px 0 10px 0">
+          Wybierz swój domyślny kolor:
+        </p>
+
+        <div class="profile-color-selector">
+          <div
+            class="profile-color-option"
+            data-color="blue"
+            style="background: #4dabf7"
+          ></div>
+          <div
+            class="profile-color-option"
+            data-color="red"
+            style="background: #ff6b6b"
+          ></div>
+          <div
+            class="profile-color-option"
+            data-color="green"
+            style="background: #51cf66"
+          ></div>
+          <div
+            class="profile-color-option"
+            data-color="yellow"
+            style="background: #ffd43b"
+          ></div>
+          <div
+            class="profile-color-option"
+            data-color="purple"
+            style="background: #9b59b6"
+          ></div>
+          <div
+            class="profile-color-option"
+            data-color="orange"
+            style="background: #ff922b"
+          ></div>
+          <div
+            class="profile-color-option"
+            data-color="pink"
+            style="background: #ff6ba9"
+          ></div>
+          <div
+            class="profile-color-option"
+            data-color="cyan"
+            style="background: #22b8cf"
+          ></div>
+        </div>
+
+        <button type="button" class="btn" id="createProfileBtn" disabled>
+          Zapisz profil
+        </button>
+      </div>
+    </div>
+
+    <!-- Profile Display (Top Left in Lobby) -->
+    <div class="profile-display" id="profileDisplay" style="display: none">
+      <div class="profile-info">
+        <div class="profile-name">
+          <span id="profileNameDisplay"></span>
+        </div>
+        <div class="profile-color-dot" id="profileColorDot"></div>
+      </div>
+      <button
+        type="button"
+        class="profile-edit-icon"
+        id="profileEditBtn"
+        title="Edytuj profil"
+        onclick="openProfileEditModal()"
+      >
+        ✏️
+      </button>
+    </div>
+
+    <!-- Profile Edit Modal -->
+    <div class="profile-edit-modal" id="profileEditModal" style="display: none">
+      <div class="profile-edit-container">
+        <h2>Edytuj profil</h2>
+
+        <input
+          type="text"
+          id="editProfileNameInput"
+          placeholder="Wpisz swoją nazwę"
+          maxlength="15"
+          autocomplete="off"
+        />
+
+        <p style="font-size: 16px; margin: 20px 0 10px 0">Domyślny kolor:</p>
+
+        <div class="edit-color-selector">
+          <div
+            class="edit-color-option"
+            data-color="blue"
+            style="background: #4dabf7"
+          ></div>
+          <div
+            class="edit-color-option"
+            data-color="red"
+            style="background: #ff6b6b"
+          ></div>
+          <div
+            class="edit-color-option"
+            data-color="green"
+            style="background: #51cf66"
+          ></div>
+          <div
+            class="edit-color-option"
+            data-color="yellow"
+            style="background: #ffd43b"
+          ></div>
+          <div
+            class="edit-color-option"
+            data-color="purple"
+            style="background: #9b59b6"
+          ></div>
+          <div
+            class="edit-color-option"
+            data-color="orange"
+            style="background: #ff922b"
+          ></div>
+          <div
+            class="edit-color-option"
+            data-color="pink"
+            style="background: #ff6ba9"
+          ></div>
+          <div
+            class="edit-color-option"
+            data-color="cyan"
+            style="background: #22b8cf"
+          ></div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 30px">
+          <button type="button" class="btn" id="saveProfileBtn">Zapisz</button>
+          <button
+            type="button"
+            class="btn"
+            id="cancelEditBtn"
+            style="background: #868e96"
+          >
+            Anuluj
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Setup Screen (Local Mode) -->
-    <div class="setup-screen" id="setupScreen">
+    <div class="setup-screen" id="setupScreen" style="display: none">
       <button class="online-mode-btn" onclick="openOnlineMode()">
         🌐 TRYB ONLINE
       </button>
@@ -1226,7 +1602,12 @@
         <button class="add-player-btn" id="addPlayerBtn" onclick="addPlayer()">
           ➕ Dodaj Gracza
         </button>
-        <button class="start-game-btn" id="startGameBtn" onclick="startGame()" disabled>
+        <button
+          class="start-game-btn"
+          id="startGameBtn"
+          onclick="startGame()"
+          disabled
+        >
           🎮 START GRY
         </button>
       </div>
@@ -1236,22 +1617,29 @@
     <div class="online-lobby" id="onlineLobby">
       <div class="online-lobby-content">
         <h2>🌐 Tryb Online</h2>
-        <p style="color: white; margin-bottom: 20px;" id="onlineStatusText">Łączenie...</p>
-        
+        <p style="color: white; margin-bottom: 20px" id="onlineStatusText">
+          Łączenie...
+        </p>
+
         <div class="qr-container" id="qrContainer">
           <div id="qrcode">
-            <p style="color: #333;">Ładowanie kodu QR...</p>
+            <p style="color: #333">Ładowanie kodu QR...</p>
           </div>
         </div>
 
         <div class="players-waiting">
           <h3>Gracze w poczekalni:</h3>
           <div id="playersWaitingList">
-            <p style="color: #999;">Czekam na graczy...</p>
+            <p style="color: #999">Czekam na graczy...</p>
           </div>
         </div>
 
-        <button class="start-online-btn" id="startOnlineBtn" onclick="startOnlineGame()" disabled>
+        <button
+          class="start-online-btn"
+          id="startOnlineBtn"
+          onclick="startOnlineGame()"
+          disabled
+        >
           🎮 START GRY (min. 2 graczy)
         </button>
 
@@ -1342,7 +1730,9 @@
 
         <div class="controls" id="localControls">
           <div class="current-player" id="currentPlayer"></div>
-          <button class="btn" id="rollDiceBtn" onclick="rollDice()">🎲 RZUĆ KOSTKĄ</button>
+          <button class="btn" id="rollDiceBtn" onclick="rollDice()">
+            🎲 RZUĆ KOSTKĄ
+          </button>
           <div class="dice-result" id="diceResult"></div>
         </div>
       </div>
@@ -1350,59 +1740,57 @@
 
     <!-- Mobile Player Screens -->
     <!-- Join Screen -->
-    <div class="mobile-player-screen" id="mobileJoinScreen">
-      <h1>🚀 Kosmiczna Matematyka</h1>
-      <h2 style="margin-bottom: 30px;">Dołącz do gry!</h2>
-      
-      <div id="mobileLoadingMsg" style="color: #ffd43b; margin-bottom: 20px; font-size: 16px;">
-        ⏳ Łączenie...
-      </div>
-      
-      <input type="text" id="mobilePlayerName" placeholder="Wpisz swoje imię" maxlength="15" autocomplete="off" autocorrect="off" autocapitalize="words" />
-      
-      <div class="mobile-color-selector" id="mobileColorSelector">
-        <div class="mobile-color-option" data-color="blue" style="background: #4dabf7;"></div>
-        <div class="mobile-color-option" data-color="red" style="background: #ff6b6b;"></div>
-        <div class="mobile-color-option" data-color="green" style="background: #51cf66;"></div>
-        <div class="mobile-color-option" data-color="yellow" style="background: #ffd43b;"></div>
-        <div class="mobile-color-option" data-color="purple" style="background: #9b59b6;"></div>
-        <div class="mobile-color-option" data-color="orange" style="background: #ff922b;"></div>
-        <div class="mobile-color-option" data-color="pink" style="background: #ff6ba9;"></div>
-        <div class="mobile-color-option" data-color="cyan" style="background: #22b8cf;"></div>
-      </div>
-
-      <button class="mobile-btn" id="mobileJoinBtn" disabled>Dołącz do gry</button>
-      <div id="mobileJoinError" class="error-msg" style="display: none;"></div>
-    </div>
-
     <!-- Waiting Screen -->
     <div class="mobile-player-screen" id="mobileWaitingScreen">
       <h1>🚀 Kosmiczna Matematyka</h1>
-      <div class="success-message">✓ Połączono!</div>
+
+      <div
+        id="mobileDebugInfo"
+        style="
+          color: #999;
+          margin-bottom: 20px;
+          font-size: 12px;
+          font-family: monospace;
+          text-align: left;
+          max-width: 400px;
+          width: 100%;
+          padding: 10px;
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 5px;
+          display: none;
+        "
+      >
+        Debug info
+      </div>
+
       <div class="status-message">
-        Czekam na rozpoczęcie gry...<br>
+        <span id="mobileWaitingText">⏳ Łączenie...</span><br />
         <span class="loading">●●●</span>
       </div>
     </div>
 
     <!-- Game Screen -->
     <div class="mobile-player-screen" id="mobileGameScreen">
-      <h1>🚀 Kosmiczna Matematyka</h1>
-      <div class="players-list" id="mobilePlayersList"></div>
       <div id="mobileTurnMessage" class="status-message"></div>
-      <button class="mobile-btn roll" id="mobileRollBtn" disabled>
+      <button type="button" class="mobile-btn roll" id="mobileRollBtn" disabled>
         🎲 RZUĆ KOSTKĄ
       </button>
     </div>
 
     <!-- Question Screen -->
     <div class="mobile-player-screen" id="mobileQuestionScreen">
-      <h1>🚀 Kosmiczna Matematyka</h1>
       <div class="question-box">
         <div class="timer" id="mobileTimer">0:00</div>
         <div class="question-text" id="mobileQuestionText"></div>
-        <input type="number" id="mobileAnswerInput" placeholder="Wpisz odpowiedź" autocomplete="off" inputmode="numeric" pattern="[0-9]*" />
-        <button class="mobile-btn" id="mobileSubmitBtn">
+        <input
+          type="number"
+          id="mobileAnswerInput"
+          placeholder="Wpisz odpowiedź"
+          autocomplete="off"
+          inputmode="numeric"
+          pattern="[0-9]*"
+        />
+        <button type="button" class="mobile-btn" id="mobileSubmitBtn">
           ✓ SPRAWDŹ
         </button>
       </div>
@@ -1412,7 +1800,7 @@
     <div class="mobile-player-screen" id="mobileWinnerScreen">
       <h1>🏆 KONIEC GRY! 🏆</h1>
       <div class="success-message" id="mobileWinnerMessage"></div>
-      <button class="mobile-btn" id="mobileReloadBtn">
+      <button type="button" class="mobile-btn" id="mobileReloadBtn">
         🔄 Zagraj ponownie
       </button>
     </div>
@@ -1422,7 +1810,12 @@
       <div class="question-content">
         <div class="question-timer" id="questionTimer">0:00</div>
         <h2 id="questionText"></h2>
-        <input type="number" id="answerInput" placeholder="Wpisz odpowiedź" autocomplete="off" />
+        <input
+          type="number"
+          id="answerInput"
+          placeholder="Wpisz odpowiedź"
+          autocomplete="off"
+        />
         <div class="correct-answer" id="correctAnswer"></div>
         <button id="checkAnswerBtn" onclick="checkAnswer()">✓ SPRAWDŹ</button>
       </div>
@@ -1437,6 +1830,12 @@
     <div class="temp-notification" id="tempNotification"></div>
 
     <script>
+      // Player Profile System
+      let playerProfile = {
+        name: "",
+        color: "",
+      };
+
       // Create stars
       function createStars() {
         const starsContainer = document.getElementById("stars");
@@ -1451,49 +1850,247 @@
       }
       createStars();
 
+      // ============================================
+      // PLAYER PROFILE SYSTEM
+      // ============================================
+
+      function loadPlayerProfile() {
+        const saved = localStorage.getItem("kosmicznaMatematykaProfile");
+        if (saved) {
+          try {
+            playerProfile = JSON.parse(saved);
+            return true;
+          } catch (e) {}
+        }
+        return false;
+      }
+
+      function savePlayerProfile() {
+        localStorage.setItem(
+          "kosmicznaMatematykaProfile",
+          JSON.stringify(playerProfile)
+        );
+      }
+
+      function showProfileSetup() {
+        document.getElementById("profileSetupScreen").style.display = "flex";
+
+        // Setup event listeners for profile creation
+        const nameInput = document.getElementById("profileNameInput");
+        const createBtn = document.getElementById("createProfileBtn");
+        const colorOptions = document.querySelectorAll(".profile-color-option");
+
+        let selectedColor = "";
+
+        // Color selection
+        colorOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            colorOptions.forEach((o) => o.classList.remove("selected"));
+            this.classList.add("selected");
+            selectedColor = this.dataset.color;
+            checkProfileReady();
+          });
+        });
+
+        // Auto-select first color
+        if (colorOptions[0]) {
+          colorOptions[0].classList.add("selected");
+          selectedColor = colorOptions[0].dataset.color;
+        }
+
+        // Name input
+        nameInput.addEventListener("input", checkProfileReady);
+
+        function checkProfileReady() {
+          const hasName = nameInput.value.trim().length > 0;
+          const hasColor = selectedColor !== "";
+          createBtn.disabled = !(hasName && hasColor);
+        }
+
+        // Create profile button
+        createBtn.addEventListener("click", function () {
+          playerProfile.name = nameInput.value.trim();
+          playerProfile.color = selectedColor;
+          savePlayerProfile();
+
+          document.getElementById("profileSetupScreen").style.display = "none";
+          initGame();
+        });
+
+        checkProfileReady();
+      }
+
+      function showProfileEditButton() {
+        const profileDisplay = document.getElementById("profileDisplay");
+        const nameDisplay = document.getElementById("profileNameDisplay");
+        const colorDot = document.getElementById("profileColorDot");
+        const editBtn = document.getElementById("profileEditBtn");
+
+        nameDisplay.textContent = playerProfile.name;
+        colorDot.style.background = getPlayerColor(playerProfile.color);
+        profileDisplay.style.display = "flex";
+
+        // Setup edit button click (only once)
+        if (!editBtn.dataset.initialized) {
+          editBtn.dataset.initialized = "true";
+          editBtn.addEventListener("click", openProfileEditModal);
+        }
+      }
+
+      function hideProfileEditButton() {
+        document.getElementById("profileDisplay").style.display = "none";
+      }
+
+      function openProfileEditModal() {
+        const modal = document.getElementById("profileEditModal");
+        const nameInput = document.getElementById("editProfileNameInput");
+        const saveBtn = document.getElementById("saveProfileBtn");
+        const cancelBtn = document.getElementById("cancelEditBtn");
+        const colorOptions = document.querySelectorAll(".edit-color-option");
+
+        // Set current values
+        nameInput.value = playerProfile.name;
+
+        // Select current color
+        colorOptions.forEach((option) => {
+          if (option.dataset.color === playerProfile.color) {
+            option.classList.add("selected");
+          } else {
+            option.classList.remove("selected");
+          }
+        });
+
+        let selectedColor = playerProfile.color;
+
+        // Color selection
+        colorOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            colorOptions.forEach((o) => o.classList.remove("selected"));
+            this.classList.add("selected");
+            selectedColor = this.dataset.color;
+          });
+        });
+
+        // Save button
+        saveBtn.onclick = function () {
+          const newName = nameInput.value.trim();
+          if (newName) {
+            playerProfile.name = newName;
+            playerProfile.color = selectedColor;
+            savePlayerProfile();
+
+            document.getElementById("profileNameDisplay").textContent =
+              playerProfile.name;
+            document.getElementById("profileColorDot").style.background =
+              getPlayerColor(playerProfile.color);
+            modal.style.display = "none";
+          }
+        };
+
+        // Cancel button
+        cancelBtn.onclick = function () {
+          modal.style.display = "none";
+        };
+
+        modal.style.display = "flex";
+      }
+
+      function initGame() {
+        // Show profile edit button in lobby
+        showProfileEditButton();
+
+        // Show main setup screen
+        document.getElementById("setupScreen").style.display = "flex";
+      }
+
       // Check if this is mobile player mode
       const urlParams = new URLSearchParams(window.location.search);
-      const roomId = urlParams.get('room');
-      const isMobilePlayer = !!roomId;
+      const localRoomId = urlParams.get("room");
+      const isMobilePlayer = !!localRoomId;
 
       if (isMobilePlayer) {
-        // Hide desktop interface, show mobile interface
-        document.getElementById('setupScreen').style.display = 'none';
-        document.getElementById('mobileJoinScreen').classList.add('active');
-        
-        // Wait for libraries to load - increased timeout
-        setTimeout(() => {
-          initMobilePlayer(roomId);
-        }, 1000);
+        // CRITICAL: Prevent multiple initializations
+        if (window.mobileInitStarted) {
+        } else {
+          window.mobileInitStarted = true;
+
+          // Hide desktop interface, show mobile waiting screen
+          document.getElementById("setupScreen").style.display = "none";
+          document
+            .getElementById("mobileWaitingScreen")
+            .classList.add("active");
+
+          // Initialize immediately - no timeout needed
+          if (document.readyState === "complete") {
+            initMobilePlayer(localRoomId);
+          } else {
+            window.addEventListener("load", function () {
+              initMobilePlayer(localRoomId);
+            });
+          }
+        }
       } else {
-        // Normal desktop mode
+        // Normal desktop mode - check profile first
         window.addEventListener("load", () => {
-          addPlayer();
+          if (loadPlayerProfile()) {
+            // Profile exists, show game
+            initGame();
+            addPlayer();
+          } else {
+            // No profile, show profile setup
+            showProfileSetup();
+          }
         });
       }
 
       // Math problems
       const mathProblems = {
         white: [
-          { q: "15+23", a: 38 }, { q: "42-17", a: 25 }, { q: "28+31", a: 59 },
-          { q: "65-28", a: 37 }, { q: "19+24", a: 43 }, { q: "51-19", a: 32 },
-          { q: "33+45", a: 78 }, { q: "74-29", a: 45 }, { q: "26+38", a: 64 },
-          { q: "81-34", a: 47 }, { q: "47+21", a: 68 }, { q: "93-48", a: 45 }
+          { q: "15+23", a: 38 },
+          { q: "42-17", a: 25 },
+          { q: "28+31", a: 59 },
+          { q: "65-28", a: 37 },
+          { q: "19+24", a: 43 },
+          { q: "51-19", a: 32 },
+          { q: "33+45", a: 78 },
+          { q: "74-29", a: 45 },
+          { q: "26+38", a: 64 },
+          { q: "81-34", a: 47 },
+          { q: "47+21", a: 68 },
+          { q: "93-48", a: 45 },
         ],
         green: [
-          { q: "7×4", a: 28 }, { q: "48÷8", a: 6 }, { q: "9×6", a: 54 },
-          { q: "56÷7", a: 8 }, { q: "8×5", a: 40 }, { q: "72÷9", a: 8 },
-          { q: "6×7", a: 42 }, { q: "63÷9", a: 7 }, { q: "4×9", a: 36 }
+          { q: "7×4", a: 28 },
+          { q: "48÷8", a: 6 },
+          { q: "9×6", a: 54 },
+          { q: "56÷7", a: 8 },
+          { q: "8×5", a: 40 },
+          { q: "72÷9", a: 8 },
+          { q: "6×7", a: 42 },
+          { q: "63÷9", a: 7 },
+          { q: "4×9", a: 36 },
         ],
         yellow: [
-          { q: "12×6", a: 72 }, { q: "96÷12", a: 8 }, { q: "14×4", a: 56 },
-          { q: "48÷6", a: 8 }, { q: "11×5", a: 55 }, { q: "66÷11", a: 6 },
-          { q: "13×4", a: 52 }, { q: "39÷3", a: 13 }, { q: "15×3", a: 45 }
+          { q: "12×6", a: 72 },
+          { q: "96÷12", a: 8 },
+          { q: "14×4", a: 56 },
+          { q: "48÷6", a: 8 },
+          { q: "11×5", a: 55 },
+          { q: "66÷11", a: 6 },
+          { q: "13×4", a: 52 },
+          { q: "39÷3", a: 13 },
+          { q: "15×3", a: 45 },
         ],
         red: [
-          { q: "17×8", a: 136 }, { q: "144÷12", a: 12 }, { q: "23×5", a: 115 },
-          { q: "132÷11", a: 12 }, { q: "19×7", a: 133 }, { q: "156÷13", a: 12 },
-          { q: "21×6", a: 126 }, { q: "168÷14", a: 12 }, { q: "24×7", a: 168 }
+          { q: "17×8", a: 136 },
+          { q: "144÷12", a: 12 },
+          { q: "23×5", a: 115 },
+          { q: "132÷11", a: 12 },
+          { q: "19×7", a: 133 },
+          { q: "156÷13", a: 12 },
+          { q: "21×6", a: 126 },
+          { q: "168÷14", a: 12 },
+          { q: "24×7", a: 168 },
         ],
       };
 
@@ -1602,19 +2199,17 @@
       // Mobile player variables
       let myPeer = null;
       let hostConnection = null;
-      let myPlayerName = '';
-      let myPlayerColor = '';
+      let myPlayerName = "";
+      let myPlayerColor = "";
       let allPlayers = [];
       let currentTurn = 0;
       let mobileQuestionTimer = null;
-      let isJoining = false;
       let mobileInitialized = false;
-      let takenColors = [];
-      let lastPlayersListHTML = '';
-      let lastTurnMessageHTML = '';
+      let lastTurnMessageHTML = "";
+      let roomId = null; // Room ID for mobile player
 
       // =====  LOCAL MODE FUNCTIONS =====
-      
+
       let playerCount = 0;
       const usedColors = new Set();
       const usedNames = new Set();
@@ -1644,7 +2239,12 @@
           <input type="text" id="player${playerCount}Name" placeholder="Wpisz imię" oninput="validateNames()" />
           <div class="error-message" id="player${playerCount}Error">To imię jest już zajęte!</div>
           <div class="color-selector" id="colors${playerCount}">
-            ${colors.map(c => `<div class="color-option" style="background: ${c.hex};" data-color="${c.name}" onclick="selectColor(${playerCount}, '${c.name}')"></div>`).join('')}
+            ${colors
+              .map(
+                (c) =>
+                  `<div class="color-option" style="background: ${c.hex};" data-color="${c.name}" onclick="selectColor(${playerCount}, '${c.name}')"></div>`
+              )
+              .join("")}
           </div>
         `;
 
@@ -1662,15 +2262,19 @@
       function selectColor(playerNum, color) {
         if (usedColors.has(color)) return;
 
-        const previousColor = gamePlayers.find(p => p.num === playerNum)?.color;
+        const previousColor = gamePlayers.find(
+          (p) => p.num === playerNum
+        )?.color;
         if (previousColor) {
           usedColors.delete(previousColor);
         }
 
         usedColors.add(color);
-        gamePlayers = gamePlayers.filter(p => p.num !== playerNum);
+        gamePlayers = gamePlayers.filter((p) => p.num !== playerNum);
 
-        const name = document.getElementById(`player${playerNum}Name`).value || `Gracz ${playerNum}`;
+        const name =
+          document.getElementById(`player${playerNum}Name`).value ||
+          `Gracz ${playerNum}`;
         gamePlayers.push({ num: playerNum, name: name, color: color });
 
         updateColorOptions();
@@ -1685,7 +2289,8 @@
           const options = setup.querySelectorAll(".color-option");
           options.forEach((option) => {
             const color = option.dataset.color;
-            const isSelected = gamePlayers.find(p => p.num === i)?.color === color;
+            const isSelected =
+              gamePlayers.find((p) => p.num === i)?.color === color;
             const isUsed = usedColors.has(color) && !isSelected;
 
             option.classList.toggle("selected", isSelected);
@@ -1729,7 +2334,8 @@
           return name && name.trim() !== "" && p.color;
         });
 
-        document.getElementById("startGameBtn").disabled = validPlayers.length < 2 || !namesValid;
+        document.getElementById("startGameBtn").disabled =
+          validPlayers.length < 2 || !namesValid;
       }
 
       document.addEventListener("input", (e) => {
@@ -1744,6 +2350,8 @@
       });
 
       function startGame() {
+        hideProfileEditButton();
+
         if (!validateNames()) {
           alert("Każdy gracz musi mieć unikalną nazwę!");
           return;
@@ -1771,13 +2379,18 @@
 
       function initBoard() {
         const board = document.getElementById("board");
-        
-        // Clear previous content except markers and instructions
-        const markers = board.querySelectorAll('.start-marker, .finish-marker, .instructions-toggle, .instructions-panel');
-        board.innerHTML = '';
-        markers.forEach(m => board.appendChild(m));
 
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        // Clear previous content except markers and instructions
+        const markers = board.querySelectorAll(
+          ".start-marker, .finish-marker, .instructions-toggle, .instructions-panel"
+        );
+        board.innerHTML = "";
+        markers.forEach((m) => board.appendChild(m));
+
+        const svg = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
         svg.style.position = "absolute";
         svg.style.top = "0";
         svg.style.left = "0";
@@ -1791,7 +2404,10 @@
           const current = boardPath[i];
           const next = boardPath[i + 1];
 
-          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          const line = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+          );
           line.setAttribute("x1", current.x + 20);
           line.setAttribute("y1", current.y + 20);
           line.setAttribute("x2", next.x + 20);
@@ -1804,7 +2420,10 @@
           const fromSpace = boardPath[shortcut.from];
           const toSpace = boardPath[shortcut.to];
 
-          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          const line = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+          );
           line.setAttribute("x1", fromSpace.x + 20);
           line.setAttribute("y1", fromSpace.y + 20);
           line.setAttribute("x2", toSpace.x + 20);
@@ -1883,7 +2502,8 @@
       }
 
       function playJumpSound() {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
 
@@ -1894,13 +2514,21 @@
         oscillator.type = "triangle";
 
         gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.01,
+          audioContext.currentTime + 0.08
+        );
 
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.08);
       }
 
-      function animatePlayerMovement(playerIndex, fromPosition, toPosition, callback) {
+      function animatePlayerMovement(
+        playerIndex,
+        fromPosition,
+        toPosition,
+        callback
+      ) {
         if (fromPosition === toPosition) {
           if (callback) callback();
           return;
@@ -1943,7 +2571,11 @@
         const player = gamePlayers[currentPlayer];
         const display = document.getElementById("currentPlayer");
         if (display) {
-          display.innerHTML = `Tura: <span style="color: ${getPlayerColor(player.color)}; text-shadow: 0 0 15px ${getPlayerColor(player.color)};">${player.name}</span>`;
+          display.innerHTML = `Tura: <span style="color: ${getPlayerColor(
+            player.color
+          )}; text-shadow: 0 0 15px ${getPlayerColor(player.color)};">${
+            player.name
+          }</span>`;
         }
       }
 
@@ -1976,7 +2608,10 @@
 
             if (playerPositions[playerIndex] >= boardPath.length) {
               setTimeout(() => {
-                showNotification(`🎉🏆 ${gamePlayers[playerIndex].name} WYGRYWA! 🏆🎉`, "success");
+                showNotification(
+                  `🎉🏆 ${gamePlayers[playerIndex].name} WYGRYWA! 🏆🎉`,
+                  "success"
+                );
                 setTimeout(() => location.reload(), 3000);
               }, 500);
               return;
@@ -1990,7 +2625,8 @@
       }
 
       function playDiceSound() {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
 
         for (let i = 0; i < 8; i++) {
           setTimeout(() => {
@@ -2004,7 +2640,10 @@
             oscillator.type = "square";
 
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.01,
+              audioContext.currentTime + 0.05
+            );
 
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.05);
@@ -2074,7 +2713,7 @@
 
         const deck = document.getElementById(deckId);
         if (!deck) return;
-        
+
         const card = deck.querySelector(".deck-card");
         if (!card) return;
 
@@ -2093,7 +2732,8 @@
         drawCard(difficulty);
 
         setTimeout(() => {
-          const problemDifficulty = difficulty === "purple" ? "red" : difficulty;
+          const problemDifficulty =
+            difficulty === "purple" ? "red" : difficulty;
           const problems = mathProblems[problemDifficulty];
 
           let problem;
@@ -2122,9 +2762,13 @@
             purple: "TELEPORT 🟣 - TRUDNE PYTANIE!",
           };
 
-          document.getElementById("questionText").textContent = `${levelNames[difficulty]}: ${problem.q} = ?`;
+          document.getElementById(
+            "questionText"
+          ).textContent = `${levelNames[difficulty]}: ${problem.q} = ?`;
           document.getElementById("answerInput").value = "";
-          document.getElementById("correctAnswer").textContent = `Poprawna odpowiedź: ${problem.a}`;
+          document.getElementById(
+            "correctAnswer"
+          ).textContent = `Poprawna odpowiedź: ${problem.a}`;
           document.getElementById("correctAnswer").style.display = "none";
 
           document.getElementById("questionModal").style.display = "flex";
@@ -2147,7 +2791,9 @@
 
         stopQuestionTimer();
 
-        const userAnswer = parseInt(document.getElementById("answerInput").value);
+        const userAnswer = parseInt(
+          document.getElementById("answerInput").value
+        );
         const correctAnswerEl = document.getElementById("correctAnswer");
         correctAnswerEl.style.display = "block";
 
@@ -2207,7 +2853,10 @@
             animatePlayerMovement(playerIndex, oldPosition, newPosition, () => {
               if (playerPositions[playerIndex] >= boardPath.length) {
                 setTimeout(() => {
-                  showNotification(`🎉🏆 ${gamePlayers[playerIndex].name} WYGRYWA! 🏆🎉`, "success");
+                  showNotification(
+                    `🎉🏆 ${gamePlayers[playerIndex].name} WYGRYWA! 🏆🎉`,
+                    "success"
+                  );
                   setTimeout(() => location.reload(), 3000);
                 }, 500);
                 return;
@@ -2219,7 +2868,10 @@
               if (giveBonus) {
                 bonusRollInTurn = true;
                 setTimeout(() => {
-                  showNotification("🎲 Twoja kolej - rzuć jeszcze raz!", "success");
+                  showNotification(
+                    "🎲 Twoja kolej - rzuć jeszcze raz!",
+                    "success"
+                  );
                 }, 500);
               } else {
                 bonusRollInTurn = false;
@@ -2261,7 +2913,7 @@
               bonusRollInTurn = false;
               nextPlayer();
             });
-            
+
             checkingAnswer = false;
             if (checkBtn) checkBtn.disabled = false;
           }, 2000);
@@ -2326,7 +2978,9 @@
 
         const minutes = Math.floor(questionTimeLeft / 60);
         const seconds = questionTimeLeft % 60;
-        timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        timerEl.textContent = `${minutes}:${seconds
+          .toString()
+          .padStart(2, "0")}`;
 
         timerEl.classList.remove("warning", "danger");
 
@@ -2368,90 +3022,85 @@
       // ===== ONLINE MODE - HOST =====
 
       function generateRoomId() {
-        return 'room_' + Math.random().toString(36).substr(2, 9);
+        return "room_" + Math.random().toString(36).substr(2, 9);
       }
 
       function openOnlineMode() {
-        if (typeof Peer === 'undefined') {
-          alert('Biblioteka PeerJS nie została załadowana. Sprawdź połączenie internetowe i odśwież stronę.');
+        if (typeof Peer === "undefined") {
+          alert(
+            "Biblioteka PeerJS nie została załadowana. Sprawdź połączenie internetowe i odśwież stronę."
+          );
           return;
         }
 
         isOnlineMode = true;
         isHost = true;
-        
+
         onlineRoomId = generateRoomId();
-        
+
         try {
           peer = new Peer(onlineRoomId);
         } catch (error) {
-          alert('Nie można uruchomić trybu online: ' + error.message);
+          alert("Nie można uruchomić trybu online: " + error.message);
           return;
         }
 
-        peer.on('open', function(id) {
-          console.log('Room ID:', id);
-          
-          document.getElementById('onlineStatusText').textContent = 'Zeskanuj kod QR telefonem!';
-          
-          const currentUrl = window.location.href.split('?')[0];
-          const playerUrl = currentUrl + '?room=' + onlineRoomId;
-          
-          document.getElementById('qrcode').innerHTML = '';
-          
-          if (typeof QRCode === 'undefined') {
-            document.getElementById('qrcode').innerHTML = '<div style="color: #333; padding: 20px; text-align: left;"><strong>Kod pokoju:</strong><br>' + onlineRoomId + '<br><br><strong>Link dla graczy:</strong><br><small>' + playerUrl + '</small></div>';
+        peer.on("open", function (id) {
+          document.getElementById("onlineStatusText").textContent =
+            "Zeskanuj kod QR telefonem!";
+
+          const currentUrl = window.location.href.split("?")[0];
+          const playerUrl = currentUrl + "?room=" + onlineRoomId;
+
+          document.getElementById("qrcode").innerHTML = "";
+
+          if (typeof QRCode === "undefined") {
+            document.getElementById("qrcode").innerHTML =
+              '<div style="color: #333; padding: 20px; text-align: left;"><strong>Kod pokoju:</strong><br>' +
+              onlineRoomId +
+              "<br><br><strong>Link dla graczy:</strong><br><small>" +
+              playerUrl +
+              "</small></div>";
           } else {
             try {
-              new QRCode(document.getElementById('qrcode'), {
+              new QRCode(document.getElementById("qrcode"), {
                 text: playerUrl,
                 width: 256,
-                height: 256
+                height: 256,
               });
             } catch (error) {
-              document.getElementById('qrcode').innerHTML = '<div style="color: #333; padding: 20px;">Link: ' + playerUrl + '</div>';
+              document.getElementById("qrcode").innerHTML =
+                '<div style="color: #333; padding: 20px;">Link: ' +
+                playerUrl +
+                "</div>";
             }
           }
 
-          document.getElementById('onlineLobby').style.display = 'flex';
+          document.getElementById("onlineLobby").style.display = "flex";
         });
 
-        peer.on('connection', function(conn) {
-          console.log('Player connected:', conn.peer);
+        peer.on("connection", function (conn) {
           connections.push(conn);
-          
-          // Send current taken colors immediately
-          setTimeout(() => {
-            if (conn.open) {
-              const takenColors = onlinePlayers.map(p => p.color);
-              conn.send({
-                type: 'takenColors',
-                colors: takenColors
-              });
-            }
-          }, 100);
-          
-          conn.on('data', function(data) {
+
+          conn.on("data", function (data) {
             handlePlayerMessage(conn, data);
           });
 
-          conn.on('close', function() {
-            connections = connections.filter(c => c !== conn);
-            onlinePlayers = onlinePlayers.filter(p => p.conn !== conn);
+          conn.on("close", function () {
+            connections = connections.filter((c) => c !== conn);
+            onlinePlayers = onlinePlayers.filter((p) => p.conn !== conn);
             updatePlayersWaitingList();
-            broadcastTakenColors();
           });
         });
 
-        peer.on('error', function(err) {
-          console.error('Peer error:', err);
-          if (err.type === 'unavailable-id') {
-            alert('Pokój jest już zajęty. Spróbuj ponownie.');
+        peer.on("error", function (err) {
+          if (err.type === "unavailable-id") {
+            alert("Pokój jest już zajęty. Spróbuj ponownie.");
             closeOnlineMode();
-          } else if (err.type === 'network') {
-            alert('Błąd sieci. Sprawdź połączenie internetowe.');
+          } else if (err.type === "network") {
+            alert("Błąd sieci. Sprawdź połączenie internetowe.");
           } else {
-            alert('Błąd połączenia: ' + err.type);
+            alert("Błąd połączenia: " + err.type);
           }
         });
       }
@@ -2464,59 +3113,90 @@
         onlinePlayers = [];
         isOnlineMode = false;
         isHost = false;
-        document.getElementById('onlineLobby').style.display = 'none';
-        document.getElementById('qrcode').innerHTML = '';
+        document.getElementById("onlineLobby").style.display = "none";
+        document.getElementById("qrcode").innerHTML = "";
       }
 
       function handlePlayerMessage(conn, data) {
-        console.log('Received from player:', data);
+        if (data.type === "join") {
+          // Check if max players reached
+          if (onlinePlayers.length >= 4) {
+            conn.send({
+              type: "error",
+              message: "Gra jest pełna! (max 4 graczy)",
+            });
+            return;
+          }
 
-        if (data.type === 'join') {
           // Check if player already exists
-          const existingPlayer = onlinePlayers.find(p => p.conn === conn);
+          const existingPlayer = onlinePlayers.find((p) => p.conn === conn);
           if (!existingPlayer) {
+            let playerColor = data.color;
+
             // Check if color is already taken
-            const colorTaken = onlinePlayers.some(p => p.color === data.color);
+            const colorTaken = onlinePlayers.some(
+              (p) => p.color === playerColor
+            );
             if (colorTaken) {
-              conn.send({ type: 'error', message: 'Ten kolor jest już zajęty!' });
-              return;
+              // Assign random available color
+              const allColors = [
+                "blue",
+                "red",
+                "green",
+                "yellow",
+                "purple",
+                "orange",
+                "pink",
+                "cyan",
+              ];
+              const takenColors = onlinePlayers.map((p) => p.color);
+              const availableColors = allColors.filter(
+                (c) => !takenColors.includes(c)
+              );
+
+              if (availableColors.length > 0) {
+                playerColor =
+                  availableColors[
+                    Math.floor(Math.random() * availableColors.length)
+                  ];
+              } else {
+                conn.send({
+                  type: "error",
+                  message: "Brak dostępnych kolorów!",
+                });
+                return;
+              }
             }
 
             onlinePlayers.push({
               conn: conn,
               name: data.name,
-              color: data.color,
-              id: conn.peer
+              color: playerColor,
+              id: conn.peer,
             });
             updatePlayersWaitingList();
-            
-            // Send success to this player
-            conn.send({ type: 'joined', success: true });
-            
-            // Broadcast taken colors to ALL players
-            broadcastTakenColors();
+
+            // Send success to this player with assigned color
+            conn.send({
+              type: "joined",
+              success: true,
+              assignedColor: playerColor,
+            });
           }
-        } else if (data.type === 'roll') {
+        } else if (data.type === "roll") {
           if (isCurrentPlayerTurn(conn)) {
             rollDiceOnline();
           }
-        } else if (data.type === 'answer') {
+        } else if (data.type === "answerUpdate") {
+          if (isCurrentPlayerTurn(conn)) {
+            // Update answer display on host in real-time
+            updateQuestionModalAnswer(data.answer);
+          }
+        } else if (data.type === "answer") {
           if (isCurrentPlayerTurn(conn)) {
             submitAnswerOnline(data.answer);
           }
         }
-      }
-      
-      function broadcastTakenColors() {
-        const takenColors = onlinePlayers.map(p => p.color);
-        connections.forEach(conn => {
-          if (conn.open) {
-            conn.send({
-              type: 'takenColors',
-              colors: takenColors
-            });
-          }
-        });
       }
 
       function isCurrentPlayerTurn(conn) {
@@ -2526,22 +3206,34 @@
       }
 
       function updatePlayersWaitingList() {
-        const list = document.getElementById('playersWaitingList');
+        const list = document.getElementById("playersWaitingList");
         if (onlinePlayers.length === 0) {
           list.innerHTML = '<p style="color: #999;">Czekam na graczy...</p>';
         } else {
-          list.innerHTML = onlinePlayers.map(p => `
+          list.innerHTML = onlinePlayers
+            .map(
+              (p) => `
             <div class="player-item">
-              <div class="player-color-dot" style="background: ${getPlayerColor(p.color)};"></div>
+              <div class="player-color-dot" style="background: ${getPlayerColor(
+                p.color
+              )};"></div>
               <strong>${p.name}</strong>
             </div>
-          `).join('');
+          `
+            )
+            .join("");
         }
 
-        const startBtn = document.getElementById('startOnlineBtn');
+        const startBtn = document.getElementById("startOnlineBtn");
         if (onlinePlayers.length >= 2 && onlinePlayers.length <= 4) {
           startBtn.disabled = false;
-          startBtn.textContent = `🎮 START GRY (${onlinePlayers.length} ${onlinePlayers.length === 1 ? 'gracz' : onlinePlayers.length < 5 ? 'graczy' : 'graczy'})`;
+          startBtn.textContent = `🎮 START GRY (${onlinePlayers.length} ${
+            onlinePlayers.length === 1
+              ? "gracz"
+              : onlinePlayers.length < 5
+              ? "graczy"
+              : "graczy"
+          })`;
         } else if (onlinePlayers.length === 1) {
           startBtn.disabled = true;
           startBtn.textContent = `Czekam na więcej graczy... (1/2)`;
@@ -2553,7 +3245,7 @@
 
       function startOnlineGame() {
         if (onlinePlayers.length < 2 || onlinePlayers.length > 4) {
-          alert('Potrzeba 2-4 graczy!');
+          alert("Potrzeba 2-4 graczy!");
           return;
         }
 
@@ -2561,22 +3253,22 @@
           num: idx + 1,
           name: p.name,
           color: p.color,
-          conn: p.conn
+          conn: p.conn,
         }));
 
         playerPositions = new Array(gamePlayers.length).fill(0);
 
-        document.getElementById('onlineLobby').style.display = 'none';
-        document.getElementById('setupScreen').style.display = 'none';
-        document.getElementById('gameScreen').style.display = 'block';
-        document.getElementById('localControls').style.display = 'none';
+        document.getElementById("onlineLobby").style.display = "none";
+        document.getElementById("setupScreen").style.display = "none";
+        document.getElementById("gameScreen").style.display = "block";
+        document.getElementById("localControls").style.display = "none";
 
         initBoard();
 
         broadcastToPlayers({
-          type: 'gameStart',
-          players: gamePlayers.map(p => ({ name: p.name, color: p.color })),
-          currentPlayer: 0
+          type: "gameStart",
+          players: gamePlayers.map((p) => ({ name: p.name, color: p.color })),
+          currentPlayer: 0,
         });
 
         notifyPlayerTurn(0);
@@ -2585,16 +3277,16 @@
       function notifyPlayerTurn(playerIndex) {
         currentPlayer = playerIndex;
         const player = gamePlayers[playerIndex];
-        
+
         broadcastToPlayers({
-          type: 'turnUpdate',
-          currentPlayer: playerIndex
+          type: "turnUpdate",
+          currentPlayer: playerIndex,
         });
 
         if (player.conn) {
           player.conn.send({
-            type: 'yourTurn',
-            canRoll: true
+            type: "yourTurn",
+            canRoll: true,
           });
         }
       }
@@ -2603,14 +3295,15 @@
         const playerIndex = currentPlayer;
         const result = Math.floor(Math.random() * 6) + 1;
 
+        // Send dice result to players (they will show animation)
         broadcastToPlayers({
-          type: 'diceRolled',
+          type: "diceRolled",
           player: playerIndex,
-          result: result
+          result: result,
         });
 
         playDiceSound();
-        showDiceAnimation(result);
+        // HOST DOES NOT SEE DICE ANIMATION - only mobile players see it
 
         setTimeout(() => {
           const oldPosition = playerPositions[playerIndex];
@@ -2618,9 +3311,9 @@
 
           animatePlayerMovement(playerIndex, oldPosition, newPosition, () => {
             broadcastToPlayers({
-              type: 'positionUpdate',
+              type: "positionUpdate",
               player: playerIndex,
-              position: playerPositions[playerIndex]
+              position: playerPositions[playerIndex],
             });
 
             if (playerPositions[playerIndex] >= boardPath.length) {
@@ -2660,12 +3353,12 @@
 
       function askQuestionOnline(difficulty, playerIndex) {
         currentDifficulty = difficulty;
-        
+
         drawCard(difficulty);
-        
+
         const problemDifficulty = difficulty === "purple" ? "red" : difficulty;
         const problems = mathProblems[problemDifficulty];
-        
+
         let problem;
         let attempts = 0;
         do {
@@ -2684,14 +3377,60 @@
         usedProblems[problemDifficulty].push(problem.q);
         currentQuestion = problem;
 
+        // Show question on host screen with player answer field
+        showQuestionOnHost(problem.q, gamePlayers[playerIndex].name);
+
         const player = gamePlayers[playerIndex];
         if (player.conn) {
           player.conn.send({
-            type: 'question',
+            type: "question",
             difficulty: difficulty,
             question: problem.q,
-            timeLimit: getQuestionTimeLimit(difficulty)
+            timeLimit: getQuestionTimeLimit(difficulty),
           });
+        }
+      }
+
+      function showQuestionOnHost(questionText, playerName) {
+        const modal = document.getElementById("questionModal");
+        const questionTextEl = document.getElementById("questionText");
+        const answerInput = document.getElementById("answerInput");
+        const checkBtn = document.getElementById("checkAnswerBtn");
+
+        questionTextEl.innerHTML = `<small style="color: #ffd43b;">${playerName} odpowiada:</small><br>${questionText} = ?`;
+        answerInput.value = "";
+        answerInput.disabled = true;
+        answerInput.placeholder = "Czekam na odpowiedź...";
+        answerInput.style.background = "rgba(255,255,255,0.1)";
+        checkBtn.style.display = "none";
+
+        document.getElementById("correctAnswer").textContent = "";
+
+        modal.style.display = "flex";
+
+        // Hide timer for online mode
+        document.getElementById("questionTimer").style.display = "none";
+      }
+
+      function updateQuestionModalAnswer(answer) {
+        const answerInput = document.getElementById("answerInput");
+        answerInput.value = answer;
+
+        // Check if answer is correct and show visual feedback
+        if (currentQuestion) {
+          const userAnswer = parseInt(answer);
+          if (!isNaN(userAnswer)) {
+            if (userAnswer === currentQuestion.a) {
+              answerInput.style.background = "rgba(81, 207, 102, 0.3)";
+              answerInput.style.borderColor = "#51cf66";
+            } else {
+              answerInput.style.background = "rgba(255, 107, 107, 0.3)";
+              answerInput.style.borderColor = "#ff6b6b";
+            }
+          } else {
+            answerInput.style.background = "rgba(255,255,255,0.1)";
+            answerInput.style.borderColor = "#667eea";
+          }
         }
       }
 
@@ -2707,6 +3446,9 @@
       }
 
       function handleCorrectAnswerOnline(playerIndex) {
+        // Close question modal on host
+        document.getElementById("questionModal").style.display = "none";
+
         let movement = 0;
         let giveBonus = false;
         let teleport = false;
@@ -2741,9 +3483,9 @@
 
         animatePlayerMovement(playerIndex, oldPosition, newPosition, () => {
           broadcastToPlayers({
-            type: 'positionUpdate',
+            type: "positionUpdate",
             player: playerIndex,
-            position: playerPositions[playerIndex]
+            position: playerPositions[playerIndex],
           });
 
           if (playerPositions[playerIndex] >= boardPath.length) {
@@ -2762,6 +3504,9 @@
       }
 
       function handleWrongAnswerOnline(playerIndex) {
+        // Close question modal on host
+        document.getElementById("questionModal").style.display = "none";
+
         let movement = 0;
 
         if (currentDifficulty === "white") {
@@ -2781,9 +3526,9 @@
 
         animatePlayerMovement(playerIndex, oldPosition, newPosition, () => {
           broadcastToPlayers({
-            type: 'positionUpdate',
+            type: "positionUpdate",
             player: playerIndex,
-            position: playerPositions[playerIndex]
+            position: playerPositions[playerIndex],
           });
 
           bonusRollInTurn = false;
@@ -2799,11 +3544,11 @@
 
       function handleWinnerOnline(playerIndex) {
         const player = gamePlayers[playerIndex];
-        
+
         broadcastToPlayers({
-          type: 'gameOver',
+          type: "gameOver",
           winner: player.name,
-          winnerColor: player.color
+          winnerColor: player.color,
         });
 
         setTimeout(() => {
@@ -2817,7 +3562,7 @@
       }
 
       function broadcastToPlayers(message) {
-        connections.forEach(conn => {
+        connections.forEach((conn) => {
           if (conn.open) {
             conn.send(message);
           }
@@ -2827,303 +3572,225 @@
       // ===== MOBILE PLAYER MODE =====
 
       function initMobilePlayer(room) {
-        if (mobileInitialized) {
-          console.log('Already initialized');
-          return;
-        }
+        if (mobileInitialized) return;
         mobileInitialized = true;
-        console.log('Init mobile player for room:', room);
-        
-        if (typeof Peer === 'undefined') {
-          console.error('PeerJS not loaded');
-          showMobileError('Błąd ładowania bibliotek. Odśwież stronę.');
+        roomId = room;
+
+        // Load profile
+        if (!loadPlayerProfile()) {
+          alert("Musisz najpierw utworzyć profil! Otwórz grę na komputerze.");
           return;
         }
 
-        try {
-          myPeer = new Peer();
-        } catch (error) {
-          console.error('Peer init error:', error);
-          showMobileError('Błąd inicjalizacji: ' + error.message);
-          return;
-        }
+        myPlayerName = playerProfile.name;
+        myPlayerColor = playerProfile.color;
 
-        myPeer.on('open', function(id) {
-          console.log('Peer ready:', id);
-          const loadingMsg = document.getElementById('mobileLoadingMsg');
-          if (loadingMsg) loadingMsg.style.display = 'none';
-        });
+        // Show waiting
+        showMobileScreen("mobileWaitingScreen");
+        document.getElementById("mobileWaitingText").textContent =
+          "⏳ Łączenie...";
 
-        myPeer.on('error', function(err) {
-          console.error('Peer error:', err);
-          showMobileError('Błąd połączenia: ' + err.type);
-        });
+        // Create peer and connect
+        myPeer = new Peer();
 
-        // Prevent form submission on all inputs
-        document.querySelectorAll('.mobile-player-screen input').forEach(input => {
-          input.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-            }
+        myPeer.on("open", function (id) {
+          // Connect to host
+          hostConnection = myPeer.connect(roomId);
+
+          hostConnection.on("open", function () {
+            // Send join
+            hostConnection.send({
+              type: "join",
+              name: myPlayerName,
+              color: myPlayerColor,
+            });
+          });
+
+          hostConnection.on("data", handleHostMessage);
+
+          hostConnection.on("error", function (err) {
+            alert("Błąd: " + err.type);
           });
         });
 
-        // Setup color buttons - ONCE
-        const colorBtns = document.querySelectorAll('.mobile-color-option');
-        colorBtns.forEach(btn => {
-          btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const color = this.dataset.color;
-            if (takenColors.includes(color)) return;
-            
-            colorBtns.forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            myPlayerColor = color;
-            checkCanJoin();
-          });
+        myPeer.on("error", function (err) {
+          alert("Błąd połączenia: " + err.type);
         });
-        
-        // Select first color by default
-        if (colorBtns[0]) {
-          colorBtns[0].classList.add('selected');
-          myPlayerColor = colorBtns[0].dataset.color;
-        }
-        
-        // Setup name input - ONCE
-        const nameInput = document.getElementById('mobilePlayerName');
-        nameInput.addEventListener('input', function() {
-          checkCanJoin();
-        });
-        
-        // Setup join button - ONCE
-        const joinBtn = document.getElementById('mobileJoinBtn');
-        joinBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          joinMobileGame();
-        });
-        
-        // Setup roll button - ONCE
-        const rollBtn = document.getElementById('mobileRollBtn');
-        rollBtn.addEventListener('click', function(e) {
-          e.preventDefault();
+
+        // Setup buttons
+        setupMobileEventListeners();
+      }
+
+      function setupMobileEventListeners() {
+        updateDebugInfo("Setting up event listeners");
+
+        // Roll button
+        const rollBtn = document.getElementById("mobileRollBtn");
+        rollBtn.addEventListener("click", function (e) {
           mobileRollDice();
         });
-        
-        // Setup submit button - ONCE  
-        const submitBtn = document.getElementById('mobileSubmitBtn');
-        submitBtn.addEventListener('click', function(e) {
-          e.preventDefault();
+
+        // Submit button
+        const submitBtn = document.getElementById("mobileSubmitBtn");
+        submitBtn.addEventListener("click", function (e) {
           mobileSubmitAnswer();
         });
-        
-        // Setup reload button - ONCE
-        const reloadBtn = document.getElementById('mobileReloadBtn');
-        reloadBtn.addEventListener('click', function(e) {
-          e.preventDefault();
+
+        // Reload button
+        const reloadBtn = document.getElementById("mobileReloadBtn");
+        reloadBtn.addEventListener("click", function (e) {
           location.reload();
         });
-        
-        // Setup enter key for answer - ONCE
-        const answerInput = document.getElementById('mobileAnswerInput');
-        answerInput.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
+
+        // Enter key for answer
+        const answerInput = document.getElementById("mobileAnswerInput");
+        answerInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
             mobileSubmitAnswer();
           }
         });
-        
-        checkCanJoin();
-      }
-      
-      function checkCanJoin() {
-        const nameInput = document.getElementById('mobilePlayerName');
-        const joinBtn = document.getElementById('mobileJoinBtn');
-        
-        if (nameInput && joinBtn) {
-          const hasName = nameInput.value.trim().length > 0;
-          const hasColor = myPlayerColor !== '';
-          joinBtn.disabled = !(hasName && hasColor) || isJoining;
-        }
-      }
-      
-      function updateTakenColors(colors) {
-        takenColors = colors;
-        
-        document.querySelectorAll('.mobile-color-option').forEach(option => {
-          const color = option.dataset.color;
-          
-          if (takenColors.includes(color) && myPlayerColor !== color) {
-            option.classList.add('disabled');
-            option.classList.remove('selected');
-          } else {
-            option.classList.remove('disabled');
-          }
-        });
+
+        updateDebugInfo("Event listeners ready");
       }
 
-      function joinMobileGame() {
-        if (isJoining) return;
-        
-        const nameInput = document.getElementById('mobilePlayerName');
-        myPlayerName = nameInput.value.trim();
+      function updateDebugInfo(message) {
+        // Temporarily enabled for debugging connection issues
+        // Will be disabled after testing
+        return;
 
-        if (!myPlayerName) {
-          showMobileError('Wpisz swoje imię!');
-          return;
+        const debugDiv = document.getElementById("mobileDebugInfo");
+        if (debugDiv) {
+          debugDiv.style.display = "block";
+          const timestamp = new Date().toLocaleTimeString();
+          debugDiv.textContent = `[${timestamp}] ${message}`;
         }
-
-        if (!myPlayerColor) {
-          showMobileError('Wybierz kolor!');
-          return;
-        }
-
-        if (!myPeer || !myPeer.id) {
-          showMobileError('Połączenie nie jest gotowe. Spróbuj za chwilę.');
-          return;
-        }
-
-        isJoining = true;
-        checkCanJoin();
-
-        try {
-          hostConnection = myPeer.connect(roomId);
-        } catch (error) {
-          showMobileError('Nie można połączyć: ' + error.message);
-          isJoining = false;
-          checkCanJoin();
-          return;
-        }
-
-        hostConnection.on('open', function() {
-          console.log('Connected to host');
-          
-          hostConnection.send({
-            type: 'join',
-            name: myPlayerName,
-            color: myPlayerColor
-          });
-        });
-
-        hostConnection.on('data', function(data) {
-          handleHostMessage(data);
-        });
-
-        hostConnection.on('close', function() {
-          alert('Połączenie przerwane!');
-          location.reload();
-        });
-
-        hostConnection.on('error', function(err) {
-          console.error('Connection error:', err);
-          isJoining = false;
-          checkCanJoin();
-          showMobileError('Błąd połączenia: ' + err.type);
-        });
       }
+
+      function getPolishColorName(color) {
+        const names = {
+          blue: "niebieski",
+          red: "czerwony",
+          green: "zielony",
+          yellow: "żółty",
+          purple: "fioletowy",
+          orange: "pomarańczowy",
+          pink: "różowy",
+          cyan: "cyjan",
+        };
+        return names[color] || color;
+      }
+
+      let handleHostMessageCount = 0;
+      let lastHostMessage = null;
+      let lastYourTurnTime = 0;
+      let isCurrentlyMyTurn = false;
 
       function handleHostMessage(data) {
-        console.log('Received from host:', data);
-
-        if (data.type === 'joined') {
+        if (data.type === "joined") {
           if (data.success) {
-            isJoining = false;
-            showMobileScreen('mobileWaitingScreen');
+            // Update color if changed
+            if (data.assignedColor) {
+              myPlayerColor = data.assignedColor;
+            }
+
+            // Show connected message
+            const waitingText = document.getElementById("mobileWaitingText");
+            if (waitingText) {
+              waitingText.innerHTML =
+                "✅ <strong>Połączono!</strong><br>Czekam na start gry...";
+            }
+
+            showMobileScreen("mobileWaitingScreen");
           }
-        } else if (data.type === 'error') {
-          isJoining = false;
-          showMobileError(data.message);
-        } else if (data.type === 'takenColors') {
-          updateTakenColors(data.colors);
-        } else if (data.type === 'gameStart') {
+        } else if (data.type === "error") {
+          alert(data.message);
+        } else if (data.type === "gameStart") {
           allPlayers = data.players;
           currentTurn = data.currentPlayer;
           startMobileGame();
-        } else if (data.type === 'yourTurn') {
+        } else if (data.type === "yourTurn") {
+          isCurrentlyMyTurn = true;
+
           if (data.canRoll) {
             enableMobileRollButton();
           }
-        } else if (data.type === 'turnUpdate') {
-          currentTurn = data.currentPlayer;
-          updateMobilePlayersList();
-          updateMobileTurnMessage();
-        } else if (data.type === 'diceRolled') {
-          // Just update UI
-        } else if (data.type === 'question') {
-          showMobileQuestion(data);
-        } else if (data.type === 'gameOver') {
+        } else if (data.type === "turnUpdate") {
+          // Only update if turn actually changed
+          if (currentTurn !== data.currentPlayer) {
+            currentTurn = data.currentPlayer;
+            isCurrentlyMyTurn = false; // No longer my turn
+            updateMobileTurnMessage();
+          }
+        } else if (data.type === "diceRolled") {
+          // Show dice result only for the player who rolled
+          const myIndex = allPlayers.findIndex(
+            (p) => p.name === myPlayerName && p.color === myPlayerColor
+          );
+          if (myIndex === data.player) {
+            showMobileDiceResult(data.result);
+          }
+        } else if (data.type === "question") {
+          // Only show question if we're on game screen (not already on question screen)
+          if (currentMobileScreen === "mobileGameScreen") {
+            showMobileQuestion(data);
+          }
+        } else if (data.type === "gameOver") {
           showMobileWinner(data.winner, data.winnerColor);
         }
       }
 
+      let currentMobileScreen = "";
+      let lastScreenChangeTime = 0;
+
       function showMobileScreen(screenId) {
-        const screens = document.querySelectorAll('.mobile-player-screen');
-        screens.forEach(screen => {
-          if (screen.id === screenId) {
-            if (!screen.classList.contains('active')) {
-              screen.classList.add('active');
-            }
-          } else {
-            if (screen.classList.contains('active')) {
-              screen.classList.remove('active');
-            }
-          }
+        // Hide all screens
+        const screens = document.querySelectorAll(".mobile-player-screen");
+        screens.forEach((screen) => {
+          screen.classList.remove("active");
         });
+
+        // Show requested screen
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+          targetScreen.classList.add("active");
+        }
+
+        currentMobileScreen = screenId;
       }
 
       function showMobileError(message) {
-        const errorDiv = document.getElementById('mobileJoinError');
-        errorDiv.textContent = message;
-        errorDiv.style.display = 'block';
-        
+        const waitingText = document.getElementById("mobileWaitingText");
+        if (waitingText) {
+          waitingText.innerHTML = `<span style="color: #ff6b6b;">❌ ${message}</span>`;
+        }
+
+        // Also show alert as backup
         setTimeout(() => {
-          errorDiv.style.display = 'none';
-        }, 3000);
+          alert(message);
+        }, 100);
       }
 
       function startMobileGame() {
-        showMobileScreen('mobileGameScreen');
-        updateMobilePlayersList();
+        showMobileScreen("mobileGameScreen");
         updateMobileTurnMessage();
       }
 
-      function updateMobilePlayersList() {
-        const listContainer = document.getElementById('mobilePlayersList');
-        if (!listContainer) return;
-
-        const newHTML = '<strong style="font-size: 16px; display: block; margin-bottom: 10px;">Gracze:</strong>' +
-          allPlayers.map((player, idx) => {
-            const isCurrentTurn = idx === currentTurn;
-            const colorDot = getPlayerColor(player.color);
-            
-            return `
-              <div class="player-item ${isCurrentTurn ? 'current-turn' : ''}">
-                <div class="player-color-dot" style="background: ${colorDot};"></div>
-                <strong>${player.name}</strong>
-                ${isCurrentTurn ? '👈' : ''}
-              </div>
-            `;
-          }).join('');
-        
-        // Only update if changed
-        if (newHTML !== lastPlayersListHTML) {
-          listContainer.innerHTML = newHTML;
-          lastPlayersListHTML = newHTML;
-        }
-      }
-
       function updateMobileTurnMessage() {
-        const messageDiv = document.getElementById('mobileTurnMessage');
+        const messageDiv = document.getElementById("mobileTurnMessage");
         if (!messageDiv) return;
-        
-        const myIndex = allPlayers.findIndex(p => p.name === myPlayerName && p.color === myPlayerColor);
-        
+
+        const myIndex = allPlayers.findIndex(
+          (p) => p.name === myPlayerName && p.color === myPlayerColor
+        );
+
         let newHTML;
         if (myIndex === currentTurn) {
-          newHTML = '<strong style="color: #51cf66; font-size: 22px;">🎲 TWOJA KOLEJ!</strong>';
+          newHTML =
+            '<strong style="color: #51cf66; font-size: 22px;">🎲 TWOJA KOLEJ!</strong>';
         } else {
           newHTML = `Tura gracza: <strong>${allPlayers[currentTurn].name}</strong><br><span class="loading">Czekaj...</span>`;
         }
-        
+
         // Only update if changed
         if (newHTML !== lastTurnMessageHTML) {
           messageDiv.innerHTML = newHTML;
@@ -3132,31 +3799,56 @@
       }
 
       function enableMobileRollButton() {
-        const rollBtn = document.getElementById('mobileRollBtn');
+        const rollBtn = document.getElementById("mobileRollBtn");
         rollBtn.disabled = false;
         updateMobileTurnMessage();
       }
 
       function mobileRollDice() {
-        const rollBtn = document.getElementById('mobileRollBtn');
+        const rollBtn = document.getElementById("mobileRollBtn");
         rollBtn.disabled = true;
 
         hostConnection.send({
-          type: 'roll'
+          type: "roll",
         });
       }
 
+      function showMobileDiceResult(result) {
+        // Show dice result as big notification
+        const turnMessage = document.getElementById("mobileTurnMessage");
+        if (turnMessage) {
+          turnMessage.innerHTML = `<div style="font-size: 80px; margin: 20px 0; animation: bounce 0.5s ease;">🎲 ${result}</div>`;
+
+          // Hide after 1.5 seconds
+          setTimeout(() => {
+            updateMobileTurnMessage();
+          }, 1500);
+        }
+      }
+
       function showMobileQuestion(data) {
-        showMobileScreen('mobileQuestionScreen');
-        
-        document.getElementById('mobileQuestionText').textContent = data.question + ' = ?';
-        document.getElementById('mobileAnswerInput').value = '';
-        
+        showMobileScreen("mobileQuestionScreen");
+
+        document.getElementById("mobileQuestionText").textContent =
+          data.question + " = ?";
+        const answerInput = document.getElementById("mobileAnswerInput");
+        answerInput.value = "";
+
+        // Send answer changes in real-time to host
+        answerInput.oninput = function () {
+          if (hostConnection && hostConnection.open) {
+            hostConnection.send({
+              type: "answerUpdate",
+              answer: this.value,
+            });
+          }
+        };
+
         // Focus after a small delay to ensure screen is shown
         setTimeout(() => {
-          document.getElementById('mobileAnswerInput').focus();
+          answerInput.focus();
         }, 300);
-        
+
         startMobileQuestionTimer(data.timeLimit);
       }
 
@@ -3180,16 +3872,18 @@
       }
 
       function updateMobileTimerDisplay(timeLeft, total) {
-        const timerEl = document.getElementById('mobileTimer');
+        const timerEl = document.getElementById("mobileTimer");
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timerEl.textContent = `${minutes}:${seconds
+          .toString()
+          .padStart(2, "0")}`;
 
-        timerEl.classList.remove('warning', 'danger');
+        timerEl.classList.remove("warning", "danger");
         if (timeLeft <= 10) {
-          timerEl.classList.add('danger');
+          timerEl.classList.add("danger");
         } else if (timeLeft <= total / 3) {
-          timerEl.classList.add('warning');
+          timerEl.classList.add("warning");
         }
       }
 
@@ -3198,23 +3892,24 @@
           clearInterval(mobileQuestionTimer);
         }
 
-        const answerInput = document.getElementById('mobileAnswerInput');
+        const answerInput = document.getElementById("mobileAnswerInput");
         const answer = answerInput.value;
 
         hostConnection.send({
-          type: 'answer',
-          answer: answer
+          type: "answer",
+          answer: answer,
         });
 
-        showMobileScreen('mobileGameScreen');
-        document.getElementById('mobileRollBtn').disabled = true;
+        showMobileScreen("mobileGameScreen");
+        document.getElementById("mobileRollBtn").disabled = true;
       }
 
       function showMobileWinner(winnerName, winnerColor) {
-        showMobileScreen('mobileWinnerScreen');
-        const message = document.getElementById('mobileWinnerMessage');
+        showMobileScreen("mobileWinnerScreen");
+        const message = document.getElementById("mobileWinnerMessage");
         const colorHex = getPlayerColor(winnerColor);
-        message.innerHTML = `<div style="font-size: 32px; margin: 20px 0;">🏆</div>` +
+        message.innerHTML =
+          `<div style="font-size: 32px; margin: 20px 0;">🏆</div>` +
           `<strong style="color: ${colorHex}; font-size: 28px; text-shadow: 0 0 10px ${colorHex};">${winnerName}</strong>` +
           `<div style="font-size: 20px; margin-top: 10px;">WYGRYWA!</div>`;
       }
