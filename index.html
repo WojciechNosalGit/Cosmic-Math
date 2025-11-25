@@ -2377,6 +2377,7 @@
       let mobileInitialized = false;
       let lastTurnMessageHTML = "";
       let roomId = null; // Room ID for mobile player
+      let isAnsweringQuestion = false; // Track if player is currently answering
 
       // =====  LOCAL MODE FUNCTIONS =====
 
@@ -3357,9 +3358,18 @@
           if (isCurrentPlayerTurn(conn)) {
             rollDiceOnline();
           }
+        } else if (data.type === "answerUpdate") {
+          if (isCurrentPlayerTurn(conn)) {
+            // Update answer display on host in real-time (without color)
+            updateQuestionModalAnswer(data.answer);
+          }
         } else if (data.type === "answer") {
           if (isCurrentPlayerTurn(conn)) {
             submitAnswerOnline(data.answer);
+          }
+        } else if (data.type === "cheat") {
+          if (isCurrentPlayerTurn(conn)) {
+            handleCheatOnline(conn, data.reason);
           }
         } else if (data.type === "rematchVote") {
           handleRematchVote(conn, data.vote);
@@ -3470,7 +3480,8 @@
         });
 
         playDiceSound();
-        // HOST DOES NOT SEE DICE ANIMATION - only mobile players see it
+        // HOST ALSO SEES DICE ANIMATION
+        showDiceAnimation(result);
 
         setTimeout(() => {
           const oldPosition = playerPositions[playerIndex];
@@ -3579,10 +3590,30 @@
         document.getElementById("questionTimer").style.display = "none";
       }
 
+      function updateQuestionModalAnswer(answer) {
+        const answerInput = document.getElementById("answerInput");
+        if (answerInput) {
+          answerInput.value = answer;
+          // NO COLOR FEEDBACK - just update the value
+        }
+      }
+
       function submitAnswerOnline(answer) {
         const playerIndex = currentPlayer;
         const userAnswer = parseInt(answer);
         const isCorrect = userAnswer === currentQuestion.a;
+
+        // Show feedback on host screen for 3 seconds
+        const correctAnswerEl = document.getElementById("correctAnswer");
+        if (correctAnswerEl) {
+          correctAnswerEl.style.display = "block";
+          if (isCorrect) {
+            correctAnswerEl.innerHTML =
+              '<div style="color: #51cf66; font-size: 32px; font-weight: bold;">✓ DOBRZE!</div>';
+          } else {
+            correctAnswerEl.innerHTML = `<div style="color: #ff6b6b; font-size: 32px; font-weight: bold;">✗ ŹLE!<br><span style="font-size: 20px;">Poprawna odpowiedź: ${currentQuestion.a}</span></div>`;
+          }
+        }
 
         // Send feedback to player
         const playerConn = gamePlayers[playerIndex].conn;
@@ -3593,11 +3624,18 @@
           });
         }
 
-        if (isCorrect) {
-          handleCorrectAnswerOnline(playerIndex);
-        } else {
-          handleWrongAnswerOnline(playerIndex);
-        }
+        // Wait 3 seconds before processing result
+        setTimeout(() => {
+          if (correctAnswerEl) {
+            correctAnswerEl.style.display = "none";
+          }
+
+          if (isCorrect) {
+            handleCorrectAnswerOnline(playerIndex);
+          } else {
+            handleWrongAnswerOnline(playerIndex);
+          }
+        }, 3000);
       }
 
       function handleCorrectAnswerOnline(playerIndex) {
@@ -3655,6 +3693,55 @@
             bonusRollInTurn = false;
             nextPlayerOnline();
           }
+        });
+      }
+
+      function handleCheatOnline(conn, reason) {
+        const playerIndex = currentPlayer;
+        const player = gamePlayers[playerIndex];
+
+        // Close question modal
+        document.getElementById("questionModal").style.display = "none";
+
+        // Show cheat notification
+        showNotification(
+          `🚨 OSZUSTWO!\n${player.name}: ${reason}\nGracz zostaje cofnięty!`,
+          "error"
+        );
+
+        // Send cheat notification to all players
+        broadcastToPlayers({
+          type: "cheatDetected",
+          playerName: player.name,
+          reason: reason,
+        });
+
+        // Penalty movement based on difficulty (same as wrong answer)
+        let movement = 0;
+        if (currentDifficulty === "white") {
+          movement = -4;
+        } else if (currentDifficulty === "purple") {
+          movement = 0;
+        } else if (currentDifficulty === "green") {
+          movement = -3;
+        } else if (currentDifficulty === "yellow") {
+          movement = -2;
+        } else if (currentDifficulty === "red") {
+          movement = -1;
+        }
+
+        const oldPosition = playerPositions[playerIndex];
+        const newPosition = Math.max(0, oldPosition + movement);
+
+        animatePlayerMovement(playerIndex, oldPosition, newPosition, () => {
+          broadcastToPlayers({
+            type: "positionUpdate",
+            player: playerIndex,
+            position: playerPositions[playerIndex],
+          });
+
+          bonusRollInTurn = false;
+          nextPlayerOnline();
         });
       }
 
@@ -4066,6 +4153,18 @@
           if (currentMobileScreen === "mobileGameScreen") {
             showMobileQuestion(data);
           }
+        } else if (data.type === "cheatDetected") {
+          // Show cheat notification on mobile
+          showMobileScreen("mobileGameScreen");
+          const turnMessage = document.getElementById("mobileTurnMessage");
+          if (turnMessage) {
+            turnMessage.innerHTML =
+              '<div style="font-size: 40px; color: #ff6b6b; animation: bounce 0.5s ease;">🚨 OSZUSTWO!<br><span style="font-size: 24px;">Zostałeś cofnięty!</span></div>';
+            setTimeout(() => {
+              updateMobileTurnMessage();
+            }, 3000);
+          }
+          isAnsweringQuestion = false;
         } else if (data.type === "gameOver") {
           showMobileWinner(data.winner, data.winnerColor);
         } else if (data.type === "rematchVote") {
@@ -4159,12 +4258,22 @@
       }
 
       function showMobileDiceResult(result) {
-        // Show dice result as big notification
+        // Show dice animation with random numbers
         const turnMessage = document.getElementById("mobileTurnMessage");
         if (turnMessage) {
-          turnMessage.innerHTML = `<div style="font-size: 80px; margin: 20px 0; animation: bounce 0.5s ease;">🎲 ${result}</div>`;
+          let count = 0;
+          const interval = setInterval(() => {
+            const randomNum = Math.floor(Math.random() * 6) + 1;
+            turnMessage.innerHTML = `<div style="font-size: 80px; margin: 20px 0;">🎲 ${randomNum}</div>`;
+            count++;
+            if (count > 10) {
+              clearInterval(interval);
+              // Show final result with bounce animation
+              turnMessage.innerHTML = `<div style="font-size: 80px; margin: 20px 0; animation: bounce 0.5s ease;">🎲 ${result}</div>`;
+            }
+          }, 80);
 
-          // Hide after 1.5 seconds
+          // Hide after animation completes
           setTimeout(() => {
             updateMobileTurnMessage();
           }, 1500);
@@ -4173,11 +4282,22 @@
 
       function showMobileQuestion(data) {
         showMobileScreen("mobileQuestionScreen");
+        isAnsweringQuestion = true;
 
         document.getElementById("mobileQuestionText").textContent =
           data.question + " = ?";
         const answerInput = document.getElementById("mobileAnswerInput");
         answerInput.value = "";
+
+        // Send answer updates in real-time (without color feedback)
+        answerInput.oninput = function () {
+          if (hostConnection && hostConnection.open) {
+            hostConnection.send({
+              type: "answerUpdate",
+              answer: this.value,
+            });
+          }
+        };
 
         // Focus after a small delay to ensure screen is shown
         setTimeout(() => {
@@ -4186,6 +4306,20 @@
 
         startMobileQuestionTimer(data.timeLimit);
       }
+
+      // Anti-cheat system - detect when player switches apps
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden && isAnsweringQuestion) {
+          // Player switched to another app (e.g. calculator) while answering
+          if (hostConnection && hostConnection.open) {
+            hostConnection.send({
+              type: "cheat",
+              reason: "Zmiana aplikacji podczas odpowiadania",
+            });
+          }
+          isAnsweringQuestion = false;
+        }
+      });
 
       function startMobileQuestionTimer(seconds) {
         if (mobileQuestionTimer) {
@@ -4235,6 +4369,7 @@
           answer: answer,
         });
 
+        isAnsweringQuestion = false; // Stop anti-cheat detection
         showMobileScreen("mobileGameScreen");
         document.getElementById("mobileRollBtn").disabled = true;
       }
