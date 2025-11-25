@@ -1649,6 +1649,93 @@
       </div>
     </div>
 
+    <!-- Rematch Voting Screen -->
+    <div
+      id="rematchVotingScreen"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          padding: 40px;
+          border-radius: 20px;
+          text-align: center;
+          max-width: 500px;
+          width: 90%;
+          border: 3px solid rgba(255, 255, 255, 0.3);
+        "
+      >
+        <h2 style="color: white; font-size: 32px; margin-bottom: 20px">
+          🎮 Zagraj ponownie?
+        </h2>
+        <div
+          id="rematchTimer"
+          style="
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+          "
+        >
+          15
+        </div>
+        <div
+          id="rematchVoteCount"
+          style="color: white; font-size: 24px; margin: 20px 0"
+        >
+          0/4 graczy gotowych
+        </div>
+        <button
+          id="rematchYesBtn"
+          onclick="voteRematch(true)"
+          style="
+            background: #51cf66;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(81, 207, 102, 0.4);
+          "
+        >
+          ✓ TAK
+        </button>
+        <button
+          id="rematchNoBtn"
+          onclick="voteRematch(false)"
+          style="
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+          "
+        >
+          ✗ NIE
+        </button>
+      </div>
+    </div>
+
     <!-- Game Screen (Local + Online Host) -->
     <div class="game-screen" id="gameScreen">
       <!-- Card Decks -->
@@ -1800,9 +1887,51 @@
     <div class="mobile-player-screen" id="mobileWinnerScreen">
       <h1>🏆 KONIEC GRY! 🏆</h1>
       <div class="success-message" id="mobileWinnerMessage"></div>
-      <button type="button" class="mobile-btn" id="mobileReloadBtn">
-        🔄 Zagraj ponownie
-      </button>
+
+      <div id="mobileRematchVoting" style="display: none; margin-top: 30px">
+        <h2 style="font-size: 28px; margin-bottom: 20px">
+          🎮 Zagraj ponownie?
+        </h2>
+        <div
+          id="mobileRematchTimer"
+          style="
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #fff;
+          "
+        >
+          15
+        </div>
+        <div
+          id="mobileRematchVoteCount"
+          style="font-size: 20px; margin: 20px 0"
+        >
+          0/4 graczy gotowych
+        </div>
+        <button
+          type="button"
+          class="mobile-btn"
+          id="mobileRematchYesBtn"
+          style="
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            margin: 10px;
+          "
+        >
+          ✓ TAK
+        </button>
+        <button
+          type="button"
+          class="mobile-btn"
+          id="mobileRematchNoBtn"
+          style="
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            margin: 10px;
+          "
+        >
+          ✗ NIE
+        </button>
+      </div>
     </div>
 
     <!-- Question Modal (Local Mode) -->
@@ -2058,6 +2187,12 @@
           { q: "81-34", a: 47 },
           { q: "47+21", a: 68 },
           { q: "93-48", a: 45 },
+          { q: "36+27", a: 63 },
+          { q: "58-23", a: 35 },
+          { q: "44+39", a: 83 },
+          { q: "72-45", a: 27 },
+          { q: "55+18", a: 73 },
+          { q: "89-56", a: 33 },
         ],
         green: [
           { q: "7×4", a: 28 },
@@ -2069,6 +2204,15 @@
           { q: "6×7", a: 42 },
           { q: "63÷9", a: 7 },
           { q: "4×9", a: 36 },
+          { q: "5²", a: 25 },
+          { q: "3²", a: 9 },
+          { q: "10²", a: 100 },
+          { q: "√16", a: 4 },
+          { q: "√25", a: 5 },
+          { q: "√36", a: 6 },
+          { q: "20+15", a: 35 },
+          { q: "50-18", a: 32 },
+          { q: "12×3", a: 36 },
         ],
         yellow: [
           { q: "12×6", a: 72 },
@@ -2080,6 +2224,15 @@
           { q: "13×4", a: 52 },
           { q: "39÷3", a: 13 },
           { q: "15×3", a: 45 },
+          { q: "7²", a: 49 },
+          { q: "6²", a: 36 },
+          { q: "9²", a: 81 },
+          { q: "√49", a: 7 },
+          { q: "√64", a: 8 },
+          { q: "√81", a: 9 },
+          { q: "20% z 50", a: 10 },
+          { q: "50% z 80", a: 40 },
+          { q: "25% z 60", a: 15 },
         ],
         red: [
           { q: "17×8", a: 136 },
@@ -2091,6 +2244,18 @@
           { q: "21×6", a: 126 },
           { q: "168÷14", a: 12 },
           { q: "24×7", a: 168 },
+          { q: "11²", a: 121 },
+          { q: "13²", a: 169 },
+          { q: "15²", a: 225 },
+          { q: "√100", a: 10 },
+          { q: "√121", a: 11 },
+          { q: "√144", a: 12 },
+          { q: "30% z 90", a: 27 },
+          { q: "75% z 80", a: 60 },
+          { q: "40% z 125", a: 50 },
+          { q: "2³", a: 8 },
+          { q: "3³", a: 27 },
+          { q: "4³", a: 64 },
         ],
       };
 
@@ -2135,9 +2300,9 @@
             let color = "white";
 
             if (currentIndex > 0 && currentIndex < cols * rows - 1) {
-              if (currentIndex - lastQuestionIndex >= 4) {
+              if (currentIndex - lastQuestionIndex >= 2) {
                 const rand = Math.random();
-                if (rand < 0.3) {
+                if (rand < 0.85) {
                   const questionRand = Math.random();
                   if (questionRand < 0.45) {
                     color = "green";
@@ -2195,6 +2360,11 @@
       let connections = [];
       let onlineRoomId = null;
       let onlinePlayers = [];
+
+      // Rematch voting
+      let rematchVotes = new Map(); // conn.peer -> true/false
+      let rematchTimer = null;
+      let rematchTimeLeft = 15;
 
       // Mobile player variables
       let myPeer = null;
@@ -3187,15 +3357,12 @@
           if (isCurrentPlayerTurn(conn)) {
             rollDiceOnline();
           }
-        } else if (data.type === "answerUpdate") {
-          if (isCurrentPlayerTurn(conn)) {
-            // Update answer display on host in real-time
-            updateQuestionModalAnswer(data.answer);
-          }
         } else if (data.type === "answer") {
           if (isCurrentPlayerTurn(conn)) {
             submitAnswerOnline(data.answer);
           }
+        } else if (data.type === "rematchVote") {
+          handleRematchVote(conn, data.vote);
         }
       }
 
@@ -3412,33 +3579,21 @@
         document.getElementById("questionTimer").style.display = "none";
       }
 
-      function updateQuestionModalAnswer(answer) {
-        const answerInput = document.getElementById("answerInput");
-        answerInput.value = answer;
-
-        // Check if answer is correct and show visual feedback
-        if (currentQuestion) {
-          const userAnswer = parseInt(answer);
-          if (!isNaN(userAnswer)) {
-            if (userAnswer === currentQuestion.a) {
-              answerInput.style.background = "rgba(81, 207, 102, 0.3)";
-              answerInput.style.borderColor = "#51cf66";
-            } else {
-              answerInput.style.background = "rgba(255, 107, 107, 0.3)";
-              answerInput.style.borderColor = "#ff6b6b";
-            }
-          } else {
-            answerInput.style.background = "rgba(255,255,255,0.1)";
-            answerInput.style.borderColor = "#667eea";
-          }
-        }
-      }
-
       function submitAnswerOnline(answer) {
         const playerIndex = currentPlayer;
         const userAnswer = parseInt(answer);
+        const isCorrect = userAnswer === currentQuestion.a;
 
-        if (userAnswer === currentQuestion.a) {
+        // Send feedback to player
+        const playerConn = gamePlayers[playerIndex].conn;
+        if (playerConn && playerConn.open) {
+          playerConn.send({
+            type: "answerFeedback",
+            correct: isCorrect,
+          });
+        }
+
+        if (isCorrect) {
           handleCorrectAnswerOnline(playerIndex);
         } else {
           handleWrongAnswerOnline(playerIndex);
@@ -3545,20 +3700,20 @@
       function handleWinnerOnline(playerIndex) {
         const player = gamePlayers[playerIndex];
 
+        // Show winner
+        showNotification(`🎉🏆 ${player.name} WYGRYWA! 🏆🎉`, "success");
+
+        // Send winner notification to all players
         broadcastToPlayers({
           type: "gameOver",
           winner: player.name,
           winnerColor: player.color,
         });
 
+        // Start rematch voting after 3 seconds
         setTimeout(() => {
-          showNotification(`🎉🏆 ${player.name} WYGRYWA! 🏆🎉`, "success");
-          setTimeout(() => {
-            if (confirm(`${player.name} wygrał! Zagrać jeszcze raz?`)) {
-              location.reload();
-            }
-          }, 3000);
-        }, 500);
+          startRematchVoting();
+        }, 3000);
       }
 
       function broadcastToPlayers(message) {
@@ -3567,6 +3722,180 @@
             conn.send(message);
           }
         });
+      }
+
+      function startRematchVoting() {
+        // Reset votes
+        rematchVotes.clear();
+        rematchTimeLeft = 15;
+
+        // Show voting screen on host
+        document.getElementById("rematchVotingScreen").style.display = "flex";
+        updateRematchUI();
+
+        // Request votes from all players
+        broadcastToPlayers({
+          type: "rematchVote",
+          request: true,
+        });
+
+        // Start timer
+        rematchTimer = setInterval(() => {
+          rematchTimeLeft--;
+          updateRematchUI();
+
+          if (rematchTimeLeft <= 0) {
+            // Timeout - check votes
+            endRematchVoting();
+
+            const totalPlayers = gamePlayers.length;
+            const votedCount = rematchVotes.size;
+            const allYes = Array.from(rematchVotes.values()).every(
+              (v) => v === true
+            );
+
+            if (votedCount === totalPlayers && allYes) {
+              resetToLobby();
+            } else {
+              showNotification(
+                "Czas minął lub nie wszyscy zagłosowali TAK. Gra zakończona.",
+                "error"
+              );
+              setTimeout(() => {
+                location.reload();
+              }, 3000);
+            }
+          }
+        }, 1000);
+      }
+
+      function voteRematch(vote) {
+        if (!isHost) return;
+
+        // Host's vote (fake connection for host)
+        rematchVotes.set("host", vote);
+        updateRematchUI();
+
+        // Disable buttons after voting
+        document.getElementById("rematchYesBtn").disabled = true;
+        document.getElementById("rematchNoBtn").disabled = true;
+
+        // Broadcast vote count to all players
+        const yesVotes = Array.from(rematchVotes.values()).filter(
+          (v) => v === true
+        ).length;
+        broadcastToPlayers({
+          type: "rematchVote",
+          voteCount: yesVotes,
+          totalPlayers: gamePlayers.length,
+        });
+
+        checkRematchVotes();
+      }
+
+      function handleRematchVote(conn, vote) {
+        rematchVotes.set(conn.peer, vote);
+        updateRematchUI();
+
+        // Broadcast vote count to all players
+        const yesVotes = Array.from(rematchVotes.values()).filter(
+          (v) => v === true
+        ).length;
+        broadcastToPlayers({
+          type: "rematchVote",
+          voteCount: yesVotes,
+          totalPlayers: gamePlayers.length,
+        });
+
+        checkRematchVotes();
+      }
+
+      function updateRematchUI() {
+        document.getElementById("rematchTimer").textContent = rematchTimeLeft;
+
+        const yesVotes = Array.from(rematchVotes.values()).filter(
+          (v) => v === true
+        ).length;
+        const totalPlayers = gamePlayers.length;
+        document.getElementById(
+          "rematchVoteCount"
+        ).textContent = `${yesVotes}/${totalPlayers} graczy gotowych`;
+      }
+
+      function checkRematchVotes() {
+        const totalPlayers = gamePlayers.length;
+        const votedCount = rematchVotes.size;
+
+        // Check if all players voted
+        if (votedCount === totalPlayers) {
+          // Check if all voted yes
+          const allYes = Array.from(rematchVotes.values()).every(
+            (v) => v === true
+          );
+
+          if (allYes) {
+            endRematchVoting();
+            resetToLobby();
+          } else {
+            endRematchVoting();
+            showNotification(
+              "Nie wszyscy gracze chcą grać ponownie. Gra zakończona.",
+              "error"
+            );
+            setTimeout(() => {
+              location.reload();
+            }, 3000);
+          }
+        }
+      }
+
+      function endRematchVoting() {
+        if (rematchTimer) {
+          clearInterval(rematchTimer);
+          rematchTimer = null;
+        }
+        document.getElementById("rematchVotingScreen").style.display = "none";
+      }
+
+      function resetToLobby() {
+        // Hide game screen
+        document.getElementById("gameScreen").style.display = "none";
+
+        // Show lobby
+        document.getElementById("onlineLobby").style.display = "flex";
+
+        // Reset game state but keep connections
+        gamePlayers = [];
+        currentPlayer = 0;
+        playerPositions = [];
+        playerPieces = [];
+        usedProblems = { white: [], green: [], yellow: [], red: [] };
+        bonusRollInTurn = false;
+
+        // Clear board
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBoard();
+
+        // Update lobby with current players
+        updatePlayersWaitingList();
+
+        // Enable start button if we have players
+        const startBtn = document.getElementById("startOnlineBtn");
+        if (onlinePlayers.length >= 2) {
+          startBtn.disabled = false;
+        }
+
+        // Notify all players to return to waiting
+        broadcastToPlayers({
+          type: "returnToLobby",
+        });
+
+        showNotification(
+          "Wszyscy zgodzili się! Wracamy do poczekalni.",
+          "success"
+        );
       }
 
       // ===== MOBILE PLAYER MODE =====
@@ -3729,6 +4058,9 @@
           if (myIndex === data.player) {
             showMobileDiceResult(data.result);
           }
+        } else if (data.type === "answerFeedback") {
+          // Show feedback for 3 seconds
+          showMobileAnswerFeedback(data.correct);
         } else if (data.type === "question") {
           // Only show question if we're on game screen (not already on question screen)
           if (currentMobileScreen === "mobileGameScreen") {
@@ -3736,6 +4068,19 @@
           }
         } else if (data.type === "gameOver") {
           showMobileWinner(data.winner, data.winnerColor);
+        } else if (data.type === "rematchVote") {
+          if (data.request) {
+            // Show voting UI
+            showMobileRematchVoting();
+          } else if (data.voteCount !== undefined) {
+            // Update vote count
+            updateMobileRematchVoteCount(data.voteCount, data.totalPlayers);
+          }
+        } else if (data.type === "returnToLobby") {
+          // Return to waiting screen
+          showMobileScreen("mobileWaitingScreen");
+          document.getElementById("mobileWaitingText").innerHTML =
+            "✅ <strong>Połączono!</strong><br>Czekam na start gry...";
         }
       }
 
@@ -3834,16 +4179,6 @@
         const answerInput = document.getElementById("mobileAnswerInput");
         answerInput.value = "";
 
-        // Send answer changes in real-time to host
-        answerInput.oninput = function () {
-          if (hostConnection && hostConnection.open) {
-            hostConnection.send({
-              type: "answerUpdate",
-              answer: this.value,
-            });
-          }
-        };
-
         // Focus after a small delay to ensure screen is shown
         setTimeout(() => {
           answerInput.focus();
@@ -3904,6 +4239,24 @@
         document.getElementById("mobileRollBtn").disabled = true;
       }
 
+      function showMobileAnswerFeedback(correct) {
+        const turnMessage = document.getElementById("mobileTurnMessage");
+        if (!turnMessage) return;
+
+        if (correct) {
+          turnMessage.innerHTML =
+            '<div style="font-size: 60px; color: #51cf66; animation: bounce 0.5s ease;">✓ DOBRZE!</div>';
+        } else {
+          turnMessage.innerHTML =
+            '<div style="font-size: 60px; color: #ff6b6b; animation: bounce 0.5s ease;">✗ ŹLE!</div>';
+        }
+
+        // Return to normal after 3 seconds
+        setTimeout(() => {
+          updateMobileTurnMessage();
+        }, 3000);
+      }
+
       function showMobileWinner(winnerName, winnerColor) {
         showMobileScreen("mobileWinnerScreen");
         const message = document.getElementById("mobileWinnerMessage");
@@ -3912,6 +4265,65 @@
           `<div style="font-size: 32px; margin: 20px 0;">🏆</div>` +
           `<strong style="color: ${colorHex}; font-size: 28px; text-shadow: 0 0 10px ${colorHex};">${winnerName}</strong>` +
           `<div style="font-size: 20px; margin-top: 10px;">WYGRYWA!</div>`;
+
+        // Hide rematch voting initially
+        document.getElementById("mobileRematchVoting").style.display = "none";
+      }
+
+      let mobileRematchTimer = null;
+      let mobileRematchTimeLeft = 15;
+
+      function showMobileRematchVoting() {
+        document.getElementById("mobileRematchVoting").style.display = "block";
+        mobileRematchTimeLeft = 15;
+
+        // Setup button handlers
+        const yesBtn = document.getElementById("mobileRematchYesBtn");
+        const noBtn = document.getElementById("mobileRematchNoBtn");
+
+        yesBtn.onclick = () => voteMobileRematch(true);
+        noBtn.onclick = () => voteMobileRematch(false);
+
+        // Start timer
+        mobileRematchTimer = setInterval(() => {
+          mobileRematchTimeLeft--;
+          document.getElementById("mobileRematchTimer").textContent =
+            mobileRematchTimeLeft;
+
+          if (mobileRematchTimeLeft <= 0) {
+            clearInterval(mobileRematchTimer);
+            // Auto vote no if timeout
+            voteMobileRematch(false);
+          }
+        }, 1000);
+      }
+
+      function voteMobileRematch(vote) {
+        // Stop timer
+        if (mobileRematchTimer) {
+          clearInterval(mobileRematchTimer);
+          mobileRematchTimer = null;
+        }
+
+        // Send vote to host
+        hostConnection.send({
+          type: "rematchVote",
+          vote: vote,
+        });
+
+        // Disable buttons
+        document.getElementById("mobileRematchYesBtn").disabled = true;
+        document.getElementById("mobileRematchNoBtn").disabled = true;
+
+        // Show waiting message
+        document.getElementById("mobileRematchVoteCount").textContent =
+          "Czekam na innych...";
+      }
+
+      function updateMobileRematchVoteCount(voteCount, totalPlayers) {
+        document.getElementById(
+          "mobileRematchVoteCount"
+        ).textContent = `${voteCount}/${totalPlayers} graczy gotowych`;
       }
     </script>
   </body>
